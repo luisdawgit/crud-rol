@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Acceso denegado{% endblock %}
+
+{% block body %}
+    <div style="text-align:center; margin-top:50px;">
+        <h1>403 - Acceso denegado</h1>
+
+        <p>
+            No tienes permiso para acceder a este recurso.
+        </p>
+
+        <a href="{{ path('app_personaje_index') }}">
+            Volver a mis personajes
+        </a>
+    </div>
+{% endblock %}
