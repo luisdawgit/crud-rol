@@ -9,8 +9,8 @@
         <thead>
             <tr>
                 <th>Nombre</th>
-                <th>Experiencia</th>
                 <th>Clan</th>
+                <th>Experiencia</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -18,8 +18,8 @@
         {% for personaje in personajes %}
             <tr>
                 <td>{{ personaje.nombre }}</td>
-                <td>{{ personaje.experiencia }}</td>
                 <td>{{ personaje.clan }}</td>
+                <td>{{ personaje.experiencia }}</td>
                 <td>
                     <a href="{{ path('app_personaje_show', {'id': personaje.id}) }}">show</a>
                     <a href="{{ path('app_personaje_edit', {'id': personaje.id}) }}">edit</a>
@@ -32,6 +32,5 @@
         {% endfor %}
         </tbody>
     </table>
-
     <a href="{{ path('app_personaje_new') }}">Create new</a>
 {% endblock %}
