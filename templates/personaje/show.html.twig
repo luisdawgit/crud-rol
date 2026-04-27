@@ -21,10 +21,42 @@
             </tr>
         </tbody>
     </table>
+{# Añadido por mi ini#}
+
+    <h2>Disciplinas</h2>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Disciplina</th>
+                <th>Nivel</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for pd in personaje.personajeDisciplinas %}
+                <tr>
+                    <td>{{ pd.disciplina.nombre }}</td>
+                    <td>{{ pd.nivel }}</td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="2">No tiene disciplinas</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{# Añadido por mi end#}
 
     <a href="{{ path('app_personaje_index') }}">back to list</a>
 
     <a href="{{ path('app_personaje_edit', {'id': personaje.id}) }}">edit</a>
+    <br><br>
+
+    <a href="{{ path('app_personaje_disciplina_new', {'id': personaje.id}) }}">
+        Añadir disciplina
+    </a>
+
 
     {{ include('personaje/_delete_form.html.twig') }}
 {% endblock %}

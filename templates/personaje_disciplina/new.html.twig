@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New PersonajeDisciplina{% endblock %}
+
+{% block body %}
+    <h1>Create new PersonajeDisciplina</h1>
+
+    {{ include('personaje_disciplina/_form.html.twig') }}
+
+    <a href="{{ path('app_personaje_show', {'id': personaje_disciplina.personaje.id}) }}">
+    Volver al personaje
+    </a>
+{% endblock %}

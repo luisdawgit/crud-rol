@@ -30,7 +30,12 @@ class Personaje
     #[ORM\JoinColumn(nullable: false)]
     private ?User $usuario = null;
 
-    #[ORM\OneToMany(mappedBy: 'personaje', targetEntity: PersonajeDisciplina::class)]
+  #[ORM\OneToMany(
+    mappedBy: 'personaje',
+    targetEntity: PersonajeDisciplina::class,
+    orphanRemoval: true,
+    cascade: ['remove']
+)]
     private Collection $personajeDisciplinas;
 
     #[ORM\OneToMany(mappedBy: 'personaje', targetEntity: ExperienciaHistorial::class)]

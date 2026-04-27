@@ -106,4 +106,17 @@ class Disciplina
 
         return $this;
     }
+
+    public function __toString(): string
+    {
+        return $this->getNombre();
+    }
+ 
+    /*
+    public function __toString(): string
+    {
+        return $this->nombre ?? '';
+    }
+    */
+
 }

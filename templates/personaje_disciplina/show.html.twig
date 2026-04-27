@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}PersonajeDisciplina{% endblock %}
+
+{% block body %}
+    <h1>PersonajeDisciplina</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ personaje_disciplina.id }}</td>
+            </tr>
+            <tr>
+                <th>Nivel</th>
+                <td>{{ personaje_disciplina.nivel }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_personaje_disciplina_index') }}">back to list</a>
+
+    <a href="{{ path('app_personaje_disciplina_edit', {'id': personaje_disciplina.id}) }}">edit</a>
+
+    {{ include('personaje_disciplina/_delete_form.html.twig') }}
+{% endblock %}
