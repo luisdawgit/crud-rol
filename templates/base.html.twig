@@ -1,3 +1,21 @@
+{#Pequeño menu comun a todas las seecciones para hacer logout y volver a Personajes#}
+{% if app.user %}
+    <div style="margin-bottom: 10px;">
+        Bienvenido a tu sesion
+        <a style=" font-weight: bold; font-size: 14pt; color: Blue;"> {{ app.user.userIdentifier }} <a>
+<br>
+        {#para navegar entre secciones#}
+        <a href="{{ path('app_personaje_index') }}">
+            Mis personajes
+        </a>
+
+        |
+        <a href="{{ path('app_logout') }}">
+            Logout
+        </a>
+    </div>
+{% endif %}
+
 <!DOCTYPE html>
 <html>
     <head>
