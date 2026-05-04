@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Atributos{% endblock %}
+
+{% block body %}
+<h1>Atributos de {{ personaje.nombre }}</h1>
+
+<h2>Físicos</h2>
+<ul>
+    {% for atributo in atributos %}
+        {% if atributo.categoria == 'Fisico' %}
+            <li>{{ atributo.nombre }}</li>
+        {% endif %}
+    {% endfor %}
+</ul>
+
+<h2>Sociales</h2>
+<ul>
+    {% for atributo in atributos %}
+        {% if atributo.categoria == 'Social' %}
+            <li>{{ atributo.nombre }}</li>
+        {% endif %}
+    {% endfor %}
+</ul>
+
+<h2>Mentales</h2>
+<ul>
+    {% for atributo in atributos %}
+        {% if atributo.categoria == 'Mental' %}
+            <li>{{ atributo.nombre }}</li>
+        {% endif %}
+    {% endfor %}
+</ul>
+
+{% endblock %}

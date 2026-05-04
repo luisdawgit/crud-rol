@@ -4,6 +4,7 @@ namespace App\Controller;
 use App\Entity\Personaje;
 use App\Form\PersonajeType;
 use App\Repository\PersonajeRepository;
+use App\Repository\AtributoRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -37,7 +38,9 @@ public function index(PersonajeRepository $personajeRepository): Response
             $entityManager->persist($personaje);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_personaje_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_personaje_atributos', [
+                'id' => $personaje->getId()
+            ]);
         }
 
         return $this->renderForm('personaje/new.html.twig', [
@@ -45,6 +48,21 @@ public function index(PersonajeRepository $personajeRepository): Response
             'form' => $form,
         ]);
     }
+
+#[Route('/{id}/atributos', name: 'app_personaje_atributos', methods: ['GET'])]
+public function atributos(Personaje $personaje, AtributoRepository $atributoRepository): Response
+{
+    if ($personaje->getUsuario() !== $this->getUser()) {
+        throw $this->createAccessDeniedException();
+    }
+
+    $atributos = $atributoRepository->findAll();
+
+    return $this->render('personaje/atributos.html.twig', [
+        'personaje' => $personaje,
+        'atributos' => $atributos,
+    ]);
+}
 
     #[Route('/{id}', name: 'app_personaje_show', methods: ['GET'])]
     public function show(Personaje $personaje): Response
@@ -94,4 +112,8 @@ public function index(PersonajeRepository $personajeRepository): Response
 
         return $this->redirectToRoute('app_personaje_index', [], Response::HTTP_SEE_OTHER);
     }
+
+
+
+ 
 }

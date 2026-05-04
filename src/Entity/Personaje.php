@@ -41,10 +41,14 @@ class Personaje
     #[ORM\OneToMany(mappedBy: 'personaje', targetEntity: ExperienciaHistorial::class)]
     private Collection $experienciaHistorials;
 
+    #[ORM\OneToMany(mappedBy: 'personaje', targetEntity: PersonajeAtributo::class)]
+    private Collection $personajeAtributos;
+
     public function __construct()
     {
         $this->personajeDisciplinas = new ArrayCollection();
         $this->experienciaHistorials = new ArrayCollection();
+        $this->personajeAtributos = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -154,6 +158,36 @@ class Personaje
             // set the owning side to null (unless already changed)
             if ($experienciaHistorial->getPersonaje() === $this) {
                 $experienciaHistorial->setPersonaje(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PersonajeAtributo>
+     */
+    public function getPersonajeAtributos(): Collection
+    {
+        return $this->personajeAtributos;
+    }
+
+    public function addPersonajeAtributo(PersonajeAtributo $personajeAtributo): static
+    {
+        if (!$this->personajeAtributos->contains($personajeAtributo)) {
+            $this->personajeAtributos->add($personajeAtributo);
+            $personajeAtributo->setPersonaje($this);
+        }
+
+        return $this;
+    }
+
+    public function removePersonajeAtributo(PersonajeAtributo $personajeAtributo): static
+    {
+        if ($this->personajeAtributos->removeElement($personajeAtributo)) {
+            // set the owning side to null (unless already changed)
+            if ($personajeAtributo->getPersonaje() === $this) {
+                $personajeAtributo->setPersonaje(null);
             }
         }
 
