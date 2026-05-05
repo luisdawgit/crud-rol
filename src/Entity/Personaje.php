@@ -41,7 +41,8 @@ class Personaje
     #[ORM\OneToMany(mappedBy: 'personaje', targetEntity: ExperienciaHistorial::class)]
     private Collection $experienciaHistorials;
 
-    #[ORM\OneToMany(mappedBy: 'personaje', targetEntity: PersonajeAtributo::class)]
+    #[ORM\OneToMany(mappedBy: 'personaje', targetEntity: PersonajeAtributo::class, orphanRemoval: true,
+    cascade: ['remove'])]
     private Collection $personajeAtributos;
 
     public function __construct()

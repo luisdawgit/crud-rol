@@ -6,10 +6,13 @@ use App\Form\PersonajeType;
 use App\Repository\PersonajeRepository;
 use App\Repository\AtributoRepository;
 use Doctrine\ORM\EntityManagerInterface;
+
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+
+use App\Entity\PersonajeAtributo;
 
 #[Route('/personaje')]
 class PersonajeController extends AbstractController
@@ -49,14 +52,90 @@ public function index(PersonajeRepository $personajeRepository): Response
         ]);
     }
 
-#[Route('/{id}/atributos', name: 'app_personaje_atributos', methods: ['GET'])]
-public function atributos(Personaje $personaje, AtributoRepository $atributoRepository): Response
+#[Route('/{id}/atributos', name: 'app_personaje_atributos', methods: ['GET','POST'])]
+public function atributos(
+    Personaje $personaje,
+    AtributoRepository $atributoRepository,
+    Request $request,
+    EntityManagerInterface $entityManager
+): Response
 {
     if ($personaje->getUsuario() !== $this->getUser()) {
         throw $this->createAccessDeniedException();
     }
 
     $atributos = $atributoRepository->findAll();
+
+    // NUEVO: procesar formulario
+    if ($request->isMethod('POST')) {
+
+        $data = $request->request->all('atributos');
+
+        // Agrupar puntos por categoría
+        $puntosPorCategoria = [
+            'Fisico' => 0,
+            'Social' => 0,
+            'Mental' => 0
+            ];
+            
+        //Validacion puntos gratuitos ini
+        foreach ($data as $atributoId => $nivel) {
+
+            
+            $atributo = $atributoRepository->find($atributoId);
+            //Validar que los Nosferatu no puedan subir Apariencia mas de 1 ini
+            if (
+                $personaje->getClan()->getNombre() === 'Nosferatu' &&
+                $atributo->getNombre() === 'Apariencia' &&
+                (int)$nivel > 1
+            ) {
+                $this->addFlash('error', 'Los Nosferatu no pueden subir Apariencia');
+            
+                return $this->redirectToRoute('app_personaje_atributos', [
+                    'id' => $personaje->getId()
+                ]);
+            }
+            //Validar que los Nosferatu no puedan subir Apariencia mas de 1 fin
+
+            // puntos extra (nivel - 1)
+            $extra = ((int)$nivel) - 1;
+
+            $categoria = $atributo->getCategoria();
+
+            $puntosPorCategoria[$categoria] += $extra;
+        }
+        
+        $valores = array_values($puntosPorCategoria);
+        sort($valores);
+
+        if ($valores !== [3, 5, 7]) {
+            $this->addFlash('error', 'Debes repartir los puntos como 7 / 5 / 3');
+
+            return $this->redirectToRoute('app_personaje_atributos', [
+                'id' => $personaje->getId()
+            ]);
+        }
+
+        //Validacion puntos gratuitos fin
+        
+        foreach ($data as $atributoId => $nivel) {
+
+            $atributo = $atributoRepository->find($atributoId);
+
+            $pa = new PersonajeAtributo();
+            $pa->setPersonaje($personaje);
+            $pa->setAtributo($atributo);
+            $pa->setNivel((int)$nivel);
+
+            $entityManager->persist($pa);
+        }
+
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_personaje_show', [
+            'id' => $personaje->getId()
+        ]);
+    }
 
     return $this->render('personaje/atributos.html.twig', [
         'personaje' => $personaje,

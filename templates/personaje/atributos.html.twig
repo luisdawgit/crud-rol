@@ -1,35 +1,116 @@
-{% extends 'base.html.twig' %}
+{% for message in app.flashes('error') %}
+    <div style="color:red;">
+        {{ message }}
+    </div>
+{% endfor %}
 
-{% block title %}Atributos{% endblock %}
-
-{% block body %}
-<h1>Atributos de {{ personaje.nombre }}</h1>
+<form method="post">
 
 <h2>Físicos</h2>
-<ul>
-    {% for atributo in atributos %}
-        {% if atributo.categoria == 'Fisico' %}
-            <li>{{ atributo.nombre }}</li>
-        {% endif %}
-    {% endfor %}
-</ul>
+{% for atributo in atributos %}
+    {% if atributo.categoria == 'Fisico' %}
+        <div>
+            {{ atributo.nombre }}
+            <div>
+
+    <button type="button" onclick="decrement({{ atributo.id }})">-</button>
+
+    <input 
+        type="number" 
+        id="attr_{{ atributo.id }}"
+        name="atributos[{{ atributo.id }}]" 
+        value="1" 
+        min="1" 
+        max="5"
+        readonly
+        style="width:40px; text-align:center;"
+    >
+
+    <button type="button" onclick="increment({{ atributo.id }})">+</button>
+</div>
+        </div>
+    {% endif %}
+{% endfor %}
 
 <h2>Sociales</h2>
-<ul>
-    {% for atributo in atributos %}
-        {% if atributo.categoria == 'Social' %}
-            <li>{{ atributo.nombre }}</li>
-        {% endif %}
-    {% endfor %}
-</ul>
+{% for atributo in atributos %}
+    {% if atributo.categoria == 'Social' %}
+    {% set esNosferatu = personaje.clan.nombre == 'Nosferatu' and atributo.nombre == 'Apariencia' %}
+
+        <div>
+            {{ atributo.nombre }}
+            <div>
+    <button type="button" onclick="decrement({{ atributo.id }})" {% if esNosferatu %}disabled{% endif %}>-</button>
+
+
+
+<input 
+    type="number" 
+    id="attr_{{ atributo.id }}"
+    name="atributos[{{ atributo.id }}]" 
+    value="1" 
+    min="1" 
+    max="5"
+    readonly
+    style="width:40px; text-align:center;"
+    {% if esNosferatu %}disabled{% endif %}
+>
+
+    <button type="button" onclick="increment({{ atributo.id }})" {% if esNosferatu %}disabled{% endif %}>+</button>
+</div>
+        </div>
+    {% endif %}
+{% endfor %}
 
 <h2>Mentales</h2>
-<ul>
-    {% for atributo in atributos %}
-        {% if atributo.categoria == 'Mental' %}
-            <li>{{ atributo.nombre }}</li>
-        {% endif %}
-    {% endfor %}
-</ul>
+{% for atributo in atributos %}
+    {% if atributo.categoria == 'Mental' %}
+        <div>
+            {{ atributo.nombre }}
+            <div>
 
-{% endblock %}
+    <button type="button" onclick="decrement({{ atributo.id }})">-</button>
+
+    <input 
+        type="number" 
+        id="attr_{{ atributo.id }}"
+        name="atributos[{{ atributo.id }}]" 
+        value="1" 
+        min="1" 
+        max="5"
+        readonly
+        style="width:40px; text-align:center;"
+    >
+
+    <button type="button" onclick="increment({{ atributo.id }})">+</button>
+</div>
+        </div>
+    {% endif %}
+{% endfor %}
+
+<script>
+function increment(id) {
+    let input = document.getElementById('attr_' + id);
+    let value = parseInt(input.value);
+
+    if (value < 5) {
+        input.value = value + 1;
+    }
+}
+
+function decrement(id) {
+    let input = document.getElementById('attr_' + id);
+    let value = parseInt(input.value);
+
+    if (value > 1) {
+        input.value = value - 1;
+    }
+}
+</script>
+
+<br>
+<br>
+<button type="submit">Guardar atributos</button>
+
+
+</form>
