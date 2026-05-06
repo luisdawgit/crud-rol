@@ -21,7 +21,6 @@
             </tr>
         </tbody>
     </table>
-{# Añadido por mi ini#}
 
     <h2>Disciplinas</h2>
 
@@ -45,8 +44,24 @@
             {% endfor %}
         </tbody>
     </table>
+    <br>
 
-{# Añadido por mi end#}
+{# Atributos ini #}
+    {% set categorias = ['Fisico','Social','Mental'] %}
+
+    {% for cat in categorias %}
+        <h3>{{cat}}</h3>
+        <ul>
+            {% for pa in personaje.personajeAtributos %}
+                {% if pa.atributo.categoria == 'Mental' %}
+                    <li>{{ pa.atributo.nombre }}: {{ pa.nivel }}</li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    {% endfor %}
+
+{# Atributos fin #}
+
     <br>
     <a href="{{ path('app_personaje_disciplina_new', {'id': personaje.id}) }}">
        + Añadir disciplina
@@ -59,4 +74,5 @@
 
     <a href="{{ path('app_personaje_index') }}">BACK TO LIST</a>
     <br><br>
+
 {% endblock %}

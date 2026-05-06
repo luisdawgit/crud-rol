@@ -4,9 +4,19 @@
     </div>
 {% endfor %}
 
-<form method="post">
+{# Aviso demasiados puntos repartidos #}
+<p id="mensaje_error" style="color:red;"></p>
 
-<h2>Físicos</h2>
+<form method="post"> 
+
+<p>
+Distribución actual: 
+<span id="distribucion"></span>
+</p>
+
+<h2>Físicos (<span id="fisico_actual">0</span>)</h2>
+<p>
+
 {% for atributo in atributos %}
     {% if atributo.categoria == 'Fisico' %}
         <div>
@@ -15,16 +25,15 @@
 
     <button type="button" onclick="decrement({{ atributo.id }})">-</button>
 
-    <input 
-        type="number" 
-        id="attr_{{ atributo.id }}"
-        name="atributos[{{ atributo.id }}]" 
-        value="1" 
-        min="1" 
-        max="5"
-        readonly
-        style="width:40px; text-align:center;"
-    >
+<input 
+    type="number"
+    id="attr_{{ atributo.id }}"
+    name="atributos[{{ atributo.id }}]"
+    value="1"
+    readonly
+    data-categoria="{{ atributo.categoria }}"
+    style="width:40px; text-align:center;"
+>
 
     <button type="button" onclick="increment({{ atributo.id }})">+</button>
 </div>
@@ -32,7 +41,7 @@
     {% endif %}
 {% endfor %}
 
-<h2>Sociales</h2>
+<h2>Sociales (<span id="social_actual">0</span>)</h2>
 {% for atributo in atributos %}
     {% if atributo.categoria == 'Social' %}
     {% set esNosferatu = personaje.clan.nombre == 'Nosferatu' and atributo.nombre == 'Apariencia' %}
@@ -42,18 +51,14 @@
             <div>
     <button type="button" onclick="decrement({{ atributo.id }})" {% if esNosferatu %}disabled{% endif %}>-</button>
 
-
-
 <input 
-    type="number" 
+    type="number"
     id="attr_{{ atributo.id }}"
-    name="atributos[{{ atributo.id }}]" 
-    value="1" 
-    min="1" 
-    max="5"
+    name="atributos[{{ atributo.id }}]"
+    value="1"
     readonly
+    data-categoria="{{ atributo.categoria }}"
     style="width:40px; text-align:center;"
-    {% if esNosferatu %}disabled{% endif %}
 >
 
     <button type="button" onclick="increment({{ atributo.id }})" {% if esNosferatu %}disabled{% endif %}>+</button>
@@ -62,7 +67,8 @@
     {% endif %}
 {% endfor %}
 
-<h2>Mentales</h2>
+
+<h2>Mentales (<span id="mental_actual">0</span>)</h2>
 {% for atributo in atributos %}
     {% if atributo.categoria == 'Mental' %}
         <div>
@@ -71,16 +77,15 @@
 
     <button type="button" onclick="decrement({{ atributo.id }})">-</button>
 
-    <input 
-        type="number" 
-        id="attr_{{ atributo.id }}"
-        name="atributos[{{ atributo.id }}]" 
-        value="1" 
-        min="1" 
-        max="5"
-        readonly
-        style="width:40px; text-align:center;"
-    >
+<input 
+    type="number"
+    id="attr_{{ atributo.id }}"
+    name="atributos[{{ atributo.id }}]"
+    value="1"
+    readonly
+    data-categoria="{{ atributo.categoria }}"
+    style="width:40px; text-align:center;"
+>
 
     <button type="button" onclick="increment({{ atributo.id }})">+</button>
 </div>
@@ -89,12 +94,81 @@
 {% endfor %}
 
 <script>
+
+
+
+function actualizarContador() {
+
+    let fisico = 0;
+    let social = 0;
+    let mental = 0;
+
+    document.querySelectorAll('input[name^="atributos"]').forEach(input => {
+
+        let valor = parseInt(input.value) - 1; // extra
+        let categoria = input.dataset.categoria;
+
+        if (categoria === 'Fisico') fisico += valor;
+        if (categoria === 'Social') social += valor;
+        if (categoria === 'Mental') mental += valor;
+    });
+
+    document.getElementById('fisico_actual').innerText = fisico;
+    document.getElementById('social_actual').innerText = social;
+    document.getElementById('mental_actual').innerText = mental;
+
+    //NUEVO
+    let arr = [fisico, social, mental].sort((a,b)=>a-b);
+    document.getElementById('distribucion').innerText = arr.join(' / ');
+}
+
+// Hook en botones
 function increment(id) {
     let input = document.getElementById('attr_' + id);
     let value = parseInt(input.value);
 
+    // calcular totales actuales
+    let fisico = 0;
+    let social = 0;
+    let mental = 0;
+
+    document.querySelectorAll('input[name^="atributos"]').forEach(inp => {
+        let val = parseInt(inp.value) - 1;
+        let cat = inp.dataset.categoria;
+
+        if (cat === 'Fisico') fisico += val;
+        if (cat === 'Social') social += val;
+        if (cat === 'Mental') mental += val;
+    });
+
+    let categoria = input.dataset.categoria;
+    let total = fisico + social + mental;
+    
+    //aviso demasiados puntos ini
+    let mensaje = document.getElementById('mensaje_error');
+    
+    //bloquear si total ya es 15
+    if (total >= 15) {
+        mensaje.innerText = "Ya has usado todos los puntos";
+        return;
+    }
+
+    //bloquear si categoría ya tiene 7
+    if (
+        (categoria === 'Fisico' && fisico >= 7) ||
+        (categoria === 'Social' && social >= 7) ||
+        (categoria === 'Mental' && mental >= 7)
+    )  {
+        mensaje.innerText = "Una categoría no puede superar 7 puntos";
+        return;
+    };
+    mensaje.innerText = "";
+    //aviso demasiados puntos fin
+
+    // subir valor
     if (value < 5) {
         input.value = value + 1;
+        actualizarContador();
     }
 }
 
@@ -104,13 +178,19 @@ function decrement(id) {
 
     if (value > 1) {
         input.value = value - 1;
+        actualizarContador();
     }
 }
+
+// Inicializar al cargar
+window.onload = actualizarContador;
 </script>
 
 <br>
 <br>
 <button type="submit">Guardar atributos</button>
+
+
 
 
 </form>
