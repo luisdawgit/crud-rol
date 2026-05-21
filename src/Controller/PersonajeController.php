@@ -65,6 +65,12 @@ public function atributos(
     }
 
     $atributos = $atributoRepository->findAll();
+    $atributosAgrupados = [];
+
+    foreach ($atributos as $atributo) {
+        $atributosAgrupados[$atributo->getCategoria()][] = $atributo;
+    }
+
 
     // NUEVO: procesar formulario
     if ($request->isMethod('POST')) {
@@ -137,11 +143,16 @@ public function atributos(
         ]);
     }
 
-    return $this->render('personaje/atributos.html.twig', [
+    return $this->render('personaje/wizard/point_allocation.html.twig', [
         'personaje' => $personaje,
-        'atributos' => $atributos,
+        'atributosAgrupados' => $atributosAgrupados,
     ]);
 }
+
+//habilidad init
+
+//habilidad fin
+
 
     #[Route('/{id}', name: 'app_personaje_show', methods: ['GET'])]
     public function show(Personaje $personaje): Response

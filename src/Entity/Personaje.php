@@ -45,11 +45,20 @@ class Personaje
     cascade: ['remove'])]
     private Collection $personajeAtributos;
 
+#[ORM\OneToMany(
+    mappedBy: 'personaje',
+    targetEntity: PersonajeHabilidad::class,
+    orphanRemoval: true
+)]
+private Collection $personajeHabilidades;
+
+
     public function __construct()
     {
         $this->personajeDisciplinas = new ArrayCollection();
         $this->experienciaHistorials = new ArrayCollection();
         $this->personajeAtributos = new ArrayCollection();
+        $this->personajeHabilidades = new ArrayCollection();
     }
 
     public function getId(): ?int

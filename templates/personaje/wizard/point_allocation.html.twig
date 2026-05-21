@@ -1,0 +1,124 @@
+{% for message in app.flashes('error') %}
+    <div style="color:red;">
+        {{ message }}
+    </div>
+{% endfor %}
+
+{# Aviso demasiados puntos repartidos #}
+<p id="mensaje_error" style="color:red;"></p>
+
+<form method="post"> 
+
+<p>
+Distribución actual: 
+<span id="distribucion"></span>
+</p>
+
+{% for categoria, lista in atributosAgrupados %}
+
+    <h2>
+        {{ categoria }}
+        (<span id="{{ categoria|lower }}_actual">0</span>)
+    </h2>
+
+    {% for atributo in lista %}
+
+        {% set esNosferatu =
+            personaje.clan.nombre == 'Nosferatu'
+            and atributo.nombre == 'Apariencia'
+        %}
+
+        <div class="point-row">
+
+            {{ atributo.nombre }}
+
+            <div>
+
+                <button
+                    type="button"
+                    class="minus-btn"
+                    {% if esNosferatu %}disabled{% endif %}
+                >
+                    -
+                </button>
+
+                <input
+                    type="number"
+                    class="point-input"
+                    name="atributos[{{ atributo.id }}]"
+                    value="1"
+                    readonly
+                    data-categoria="{{ categoria }}"
+                    style="width:40px; text-align:center;"
+                >
+
+                <button
+                    type="button"
+                    class="plus-btn"
+                    {% if esNosferatu %}disabled{% endif %}
+                >
+                    +
+                </button>
+
+            </div>
+
+        </div>
+
+    {% endfor %}
+
+{% endfor %}
+
+
+
+
+<script>
+
+function actualizarContador() {
+
+    let fisico = 0;
+    let social = 0;
+    let mental = 0;
+
+    document.querySelectorAll('input[name^="atributos"]').forEach(input => {
+
+        let valor = parseInt(input.value) - 1; // extra
+        let categoria = input.dataset.categoria;
+
+        if (categoria === 'Fisico') fisico += valor;
+        if (categoria === 'Social') social += valor;
+        if (categoria === 'Mental') mental += valor;
+    });
+
+    document.getElementById('fisico_actual').innerText = fisico;
+    document.getElementById('social_actual').innerText = social;
+    document.getElementById('mental_actual').innerText = mental;
+
+    //NUEVO
+    let arr = [fisico, social, mental].sort((a,b)=>a-b);
+    document.getElementById('distribucion').innerText = arr.join(' / ');
+}
+
+
+
+// Inicializar al cargar
+window.onload = actualizarContador;
+</script>
+<script src="{{ asset('js/point_allocator.js') }}"></script>
+
+<script>
+
+initPointAllocator({
+    minimo: 1,
+    maximo: 5
+});
+
+</script>
+
+<br>
+<br>
+<button type="submit">Guardar atributos</button>
+
+
+
+
+</form>

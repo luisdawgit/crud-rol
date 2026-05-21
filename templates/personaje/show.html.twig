@@ -53,7 +53,7 @@
         <h3>{{cat}}</h3>
         <ul>
             {% for pa in personaje.personajeAtributos %}
-                {% if pa.atributo.categoria == 'Mental' %}
+                {% if pa.atributo.categoria == cat %}
                     <li>{{ pa.atributo.nombre }}: {{ pa.nivel }}</li>
                 {% endif %}
             {% endfor %}
