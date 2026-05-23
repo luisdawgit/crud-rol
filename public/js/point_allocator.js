@@ -18,7 +18,7 @@ function initPointAllocator(config) {
 
       totales[categoria] += valor - config.minimo;
     });
-
+    //posible bug: +"_actual"
     Object.keys(totales).forEach((categoria) => {
       const contador = document.getElementById(
         categoria.toLowerCase() + "_actual",
@@ -28,6 +28,21 @@ function initPointAllocator(config) {
         contador.textContent = totales[categoria];
       }
     });
+
+    //seguro ini
+    //posible bug: +"_actual"
+    // Object.keys(totales).forEach((categoria) => {
+    //   console.log(categoria); //debug
+    //   console.log(categoria.toLowerCase() + "_actual"); //debug
+    //   const contador = document.getElementById(
+    //     categoria.toLowerCase() + "_actual",
+    //   );
+
+    //   if (contador) {
+    //     contador.textContent = totales[categoria];
+    //   }
+    // });
+    //seguro fin
   }
   //Mostrar contador de puntos gratuitos en atributos fin
 

@@ -14,6 +14,10 @@ use Symfony\Component\Routing\Annotation\Route;
 
 use App\Entity\PersonajeAtributo;
 
+use App\Repository\HabilidadRepository;
+use App\Entity\Habilidad;
+use App\Entity\PersonajeHabilidad;
+
 #[Route('/personaje')]
 class PersonajeController extends AbstractController
 {
@@ -138,6 +142,97 @@ public function atributos(
 
         $entityManager->flush();
 
+        return $this->redirectToRoute('app_personaje_habilidades', [
+            'id' => $personaje->getId()
+        ]);
+    }
+
+    return $this->render('personaje/wizard/point_allocation.html.twig', [
+        'personaje' => $personaje,
+        'titulo' => 'Atributos',
+        'rasgosAgrupados' => $atributosAgrupados,
+        'inputName' => 'atributos',
+        'minimo' => 1,
+        'maximo' => 5
+    ]);
+}
+
+//habilidad init
+#[Route('/{id}/habilidades', name: 'app_personaje_habilidades', methods: ['GET','POST'])]
+public function habilidades(
+    Personaje $personaje,
+    HabilidadRepository $habilidadRepository,
+    Request $request,
+    EntityManagerInterface $entityManager
+): Response
+{
+    if ($personaje->getUsuario() !== $this->getUser()) {
+        throw $this->createAccessDeniedException();
+    }
+
+    $habilidades = $habilidadRepository->findAll(); // luego lo cambiamos a HabilidadRepository
+
+    $habilidadesAgrupadas = [];
+
+    foreach ($habilidades as $hab) {
+        $habilidadesAgrupadas[$hab->getCategoria()][] = $hab;
+    }
+
+    if ($request->isMethod('POST')) {
+
+        $data = $request->request->all('habilidades');
+
+        $puntosPorCategoria = [
+            'Talentos' => 0,
+            'Tecnicas' => 0,
+            'Conocimientos' => 0
+        ];
+
+        //Sumar puntos de habilidad init
+        foreach ($data as $habilidadId => $nivel) {
+
+            $habilidad = $habilidadRepository->find($habilidadId);
+
+            $categoria = $habilidad->getCategoria();
+
+            $puntosPorCategoria[$categoria] += (int)$nivel;
+        }
+        //Sumar puntos de habilidad fin
+
+        //validar puntos habilidades 13/9/5 ini
+        $valores = array_values($puntosPorCategoria);
+
+        sort($valores);
+
+        if ($valores !== [5,9,13]) {
+
+            $this->addFlash(
+                'error',
+                'Debes repartir las habilidades como 13 / 9 / 5'
+            );
+
+            return $this->redirectToRoute(
+                'app_personaje_habilidades',
+                ['id' => $personaje->getId()]
+            );
+        }
+        //validar puntos habilidades 13/9/5 fin
+
+        
+        foreach ($data as $habilidadId => $nivel) {
+
+            $habilidad = $entityManager->getRepository(Habilidad::class)->find($habilidadId);
+
+            $ph = new PersonajeHabilidad();
+            $ph->setPersonaje($personaje);
+            $ph->setHabilidad($habilidad);
+            $ph->setNivel((int)$nivel);
+
+            $entityManager->persist($ph);
+        }
+
+        $entityManager->flush();
+
         return $this->redirectToRoute('app_personaje_show', [
             'id' => $personaje->getId()
         ]);
@@ -145,13 +240,15 @@ public function atributos(
 
     return $this->render('personaje/wizard/point_allocation.html.twig', [
         'personaje' => $personaje,
-        'atributosAgrupados' => $atributosAgrupados,
+        'titulo' => 'Habilidades',
+        'rasgosAgrupados' => $habilidadesAgrupadas,
+        'inputName' => 'habilidades',
+        'minimo' => 0,
+        'maximo' => 3
     ]);
 }
-
-//habilidad init
-
 //habilidad fin
+
 
 
     #[Route('/{id}', name: 'app_personaje_show', methods: ['GET'])]

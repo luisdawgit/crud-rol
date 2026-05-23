@@ -14,51 +14,36 @@ Distribución actual:
 <span id="distribucion"></span>
 </p>
 
-{% for categoria, lista in atributosAgrupados %}
+<h1>{{ titulo }}</h1>
+
+{% for categoria, lista in rasgosAgrupados %}
 
     <h2>
         {{ categoria }}
         (<span id="{{ categoria|lower }}_actual">0</span>)
+
     </h2>
 
-    {% for atributo in lista %}
-
-        {% set esNosferatu =
-            personaje.clan.nombre == 'Nosferatu'
-            and atributo.nombre == 'Apariencia'
-        %}
+    {% for item in lista %}
 
         <div class="point-row">
 
-            {{ atributo.nombre }}
+            {{ item.nombre }}
 
             <div>
 
-                <button
-                    type="button"
-                    class="minus-btn"
-                    {% if esNosferatu %}disabled{% endif %}
-                >
-                    -
-                </button>
+                <button type="button" class="minus-btn">-</button>
 
                 <input
                     type="number"
                     class="point-input"
-                    name="atributos[{{ atributo.id }}]"
-                    value="1"
+                    name="{{ inputName }}[{{ item.id }}]"
+                    value="{{minimo}}"
                     readonly
                     data-categoria="{{ categoria }}"
-                    style="width:40px; text-align:center;"
                 >
 
-                <button
-                    type="button"
-                    class="plus-btn"
-                    {% if esNosferatu %}disabled{% endif %}
-                >
-                    +
-                </button>
+                <button type="button" class="plus-btn">+</button>
 
             </div>
 
@@ -68,44 +53,7 @@ Distribución actual:
 
 {% endfor %}
 
-
-
-
-<script>
-
-function actualizarContador() {
-
-    let fisico = 0;
-    let social = 0;
-    let mental = 0;
-
-    document.querySelectorAll('input[name^="atributos"]').forEach(input => {
-
-        let valor = parseInt(input.value) - 1; // extra
-        let categoria = input.dataset.categoria;
-
-        if (categoria === 'Fisico') fisico += valor;
-        if (categoria === 'Social') social += valor;
-        if (categoria === 'Mental') mental += valor;
-    });
-
-    document.getElementById('fisico_actual').innerText = fisico;
-    document.getElementById('social_actual').innerText = social;
-    document.getElementById('mental_actual').innerText = mental;
-
-    //NUEVO
-    let arr = [fisico, social, mental].sort((a,b)=>a-b);
-    document.getElementById('distribucion').innerText = arr.join(' / ');
-}
-
-
-
-// Inicializar al cargar
-window.onload = actualizarContador;
-</script>
-<script src="{{ asset('js/point_allocator.js') }}"></script>
-
-<script>
+<script src="{{ asset('js/point_allocator.js') }}">
 
 initPointAllocator({
     minimo: 1,
@@ -117,8 +65,5 @@ initPointAllocator({
 <br>
 <br>
 <button type="submit">Guardar atributos</button>
-
-
-
 
 </form>
