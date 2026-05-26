@@ -53,12 +53,16 @@ Distribución actual:
 
 {% endfor %}
 
-<script src="{{ asset('js/point_allocator.js') }}">
+<script src="{{ asset('js/point_allocator.js') }}"></script>
 
-initPointAllocator({
-    minimo: 1,
-    maximo: 5
-});
+
+<script>
+
+    initPointAllocator({
+        minimo: {{ minimo }},
+        base: {{ minimo }},
+        maximo: {{ maximo }}
+    });
 
 </script>
 

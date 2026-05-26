@@ -1,4 +1,8 @@
 function initPointAllocator(config) {
+  config.minimo = parseInt(config.minimo);
+  config.maximo = parseInt(config.maximo);
+  config.base = parseInt(config.base);
+
   const plusButtons = document.querySelectorAll(".plus-btn");
   const minusButtons = document.querySelectorAll(".minus-btn");
 
@@ -16,7 +20,9 @@ function initPointAllocator(config) {
         totales[categoria] = 0;
       }
 
-      totales[categoria] += valor - config.minimo;
+      // totales[categoria] += valor - config.minimo;
+      let base = config.base ?? 0; //nuevo 25/6
+      totales[categoria] += valor - base; //nuevo 25/6
     });
     //posible bug: +"_actual"
     Object.keys(totales).forEach((categoria) => {
