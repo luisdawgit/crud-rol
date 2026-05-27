@@ -24,6 +24,11 @@
                     <a href="{{ path('app_personaje_show', {'id': personaje.id}) }}">show</a>
                     <a href="{{ path('app_personaje_edit', {'id': personaje.id}) }}">edit</a>
                 </td>
+                <td>
+                    {# boton borrar#}
+                    {{ include('personaje/_delete_form.html.twig') }}
+                </td>
+
             </tr>
         {% else %}
             <tr>
