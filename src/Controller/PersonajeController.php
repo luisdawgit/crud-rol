@@ -85,12 +85,6 @@ public function atributos(
 
         $data = $request->request->all('atributos');
 
-        // Agrupar puntos por categoría
-        $puntosPorCategoria = [
-            'Fisico' => 0,
-            'Social' => 0,
-            'Mental' => 0
-            ];
             
         //Validacion puntos gratuitos ini
         foreach ($data as $atributoId => $nivel) {
@@ -109,13 +103,6 @@ public function atributos(
                 ]);
             }
             //Validar que los Nosferatu no puedan subir Apariencia mas de 1 fin
-
-            // puntos extra (nivel - 1)
-            $extra = ((int)$nivel) - 1;
-
-            $categoria = $atributo->getCategoria();
-
-            $puntosPorCategoria[$categoria] += $extra;
         }
 
 
@@ -129,7 +116,6 @@ public function atributos(
                 return $atributoRepository
                     ->find($atributoId)
                     ->getCategoria();
-
             },
 
             [3,5,7],
@@ -148,18 +134,6 @@ public function atributos(
             );
         }
         //nuevo fin
-        
-        $valores = array_values($puntosPorCategoria);
-        sort($valores);
-        
-        if ($valores !== [3, 5, 7]) {
-            $this->addFlash('error', 'Debes repartir los puntos como 7 / 5 / 3');
-            
-
-            return $this->redirectToRoute('app_personaje_atributos', [
-                'id' => $personaje->getId()
-            ]);
-        }
 
 
         //Validacion puntos gratuitos fin
@@ -174,7 +148,6 @@ public function atributos(
             $pa->setNivel((int)$nivel);
 
             $entityManager->persist($pa);
-
 
         }
 
@@ -222,11 +195,7 @@ public function habilidades(
 
         $data = $request->request->all('habilidades');
 
-        $puntosPorCategoria = [
-            'Talentos' => 0,
-            'Tecnicas' => 0,
-            'Conocimientos' => 0
-        ];
+
 
         //Sumar puntos de habilidad init
         foreach ($data as $habilidadId => $nivel) {
