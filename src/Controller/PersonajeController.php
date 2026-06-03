@@ -57,6 +57,7 @@ public function index(PersonajeRepository $personajeRepository): Response
             'form' => $form,
         ]);
     }
+    
 // atributos init
 #[Route('/{id}/atributos', name: 'app_personaje_atributos', methods: ['GET','POST'])]
 public function atributos(
@@ -116,17 +117,50 @@ public function atributos(
 
             $puntosPorCategoria[$categoria] += $extra;
         }
+
+
+        //nuevo ini
+        if (!$pointAllocation->validarDistribucion(
+
+            $data,
+
+            function ($atributoId) use ($atributoRepository) {
+
+                return $atributoRepository
+                    ->find($atributoId)
+                    ->getCategoria();
+
+            },
+
+            [3,5,7],
+
+            1
+        )) {
+
+            $this->addFlash(
+                'error',
+                'Debes repartir los puntos como 7 / 5 / 3'
+            );
+
+            return $this->redirectToRoute(
+                'app_personaje_atributos',
+                ['id' => $personaje->getId()]
+            );
+        }
+        //nuevo fin
         
         $valores = array_values($puntosPorCategoria);
         sort($valores);
-
+        
         if ($valores !== [3, 5, 7]) {
             $this->addFlash('error', 'Debes repartir los puntos como 7 / 5 / 3');
+            
 
             return $this->redirectToRoute('app_personaje_atributos', [
                 'id' => $personaje->getId()
             ]);
         }
+
 
         //Validacion puntos gratuitos fin
         
@@ -140,6 +174,8 @@ public function atributos(
             $pa->setNivel((int)$nivel);
 
             $entityManager->persist($pa);
+
+
         }
 
         $entityManager->flush();
