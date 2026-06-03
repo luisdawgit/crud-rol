@@ -18,6 +18,8 @@ use App\Repository\HabilidadRepository;
 use App\Entity\Habilidad;
 use App\Entity\PersonajeHabilidad;
 
+use App\Service\PointAllocationService;
+
 #[Route('/personaje')]
 class PersonajeController extends AbstractController
 {
@@ -55,13 +57,14 @@ public function index(PersonajeRepository $personajeRepository): Response
             'form' => $form,
         ]);
     }
-
+// atributos init
 #[Route('/{id}/atributos', name: 'app_personaje_atributos', methods: ['GET','POST'])]
 public function atributos(
     Personaje $personaje,
     AtributoRepository $atributoRepository,
     Request $request,
-    EntityManagerInterface $entityManager
+    EntityManagerInterface $entityManager,
+    PointAllocationService $pointAllocation
 ): Response
 {
     if ($personaje->getUsuario() !== $this->getUser()) {
@@ -91,7 +94,6 @@ public function atributos(
         //Validacion puntos gratuitos ini
         foreach ($data as $atributoId => $nivel) {
 
-            
             $atributo = $atributoRepository->find($atributoId);
             //Validar que los Nosferatu no puedan subir Apariencia mas de 1 ini
             if (
@@ -156,6 +158,8 @@ public function atributos(
         'maximo' => 5
     ]);
 }
+
+// atributos fin
 
 //habilidad init
 #[Route('/{id}/habilidades', name: 'app_personaje_habilidades', methods: ['GET','POST'])]

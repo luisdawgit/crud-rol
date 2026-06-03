@@ -8,6 +8,8 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\User;
 
+
+
 #[ORM\Entity(repositoryClass: PersonajeRepository::class)]
 class Personaje
 {
@@ -59,7 +61,7 @@ private Collection $personajeHabilidades;
         $this->experienciaHistorials = new ArrayCollection();
         $this->personajeAtributos = new ArrayCollection();
         $this->personajeHabilidades = new ArrayCollection();
-    }
+        }
 
     public function getId(): ?int
     {
@@ -106,6 +108,11 @@ private Collection $personajeHabilidades;
     {
         return $this->usuario;
     }
+    public function getPersonajeHabilidades(): Collection
+    {
+        return $this->personajeHabilidades;
+    }
+
 
     public function setUsuario(?User $usuario): static
     {

@@ -49,8 +49,9 @@
 {# Atributos ini #}
     {% set categorias = ['Fisico','Social','Mental'] %}
 
+    <h3> Atributos </h3>
     {% for cat in categorias %}
-        <h3>{{cat}}</h3>
+        <h2>{{cat}}</h2>
         <ul>
             {% for pa in personaje.personajeAtributos %}
                 {% if pa.atributo.categoria == cat %}
@@ -61,6 +62,26 @@
     {% endfor %}
 
 {# Atributos fin #}
+
+
+{# Habilidades ini #}
+<h3> Habilidades </h3>
+    {% set categorias = ['Talentos','Tecnicas','Conocimientos'] %}
+    {% for cat in categorias  %}
+    <h2> {{ cat }} </h2>
+        <ul>
+            {% for ph in personaje.personajeHabilidades %}
+                {% if ph.habilidad.categoria == cat %}
+                    <li> {{ ph.habilidad.nombre }}:{{ ph.nivel }} </li>        
+                {% endif  %}
+            {% endfor  %}
+        </ul>
+
+    {% endfor  %}
+
+{# Habilidades fin #}
+
+
 
     <br>
     <a href="{{ path('app_personaje_disciplina_new', {'id': personaje.id}) }}">
