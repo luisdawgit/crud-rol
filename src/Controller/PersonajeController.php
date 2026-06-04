@@ -176,7 +176,8 @@ public function habilidades(
     Personaje $personaje,
     HabilidadRepository $habilidadRepository,
     Request $request,
-    EntityManagerInterface $entityManager
+    EntityManagerInterface $entityManager,
+    PointAllocationService $pointAllocation
 ): Response
 {
     if ($personaje->getUsuario() !== $this->getUser()) {
@@ -195,25 +196,22 @@ public function habilidades(
 
         $data = $request->request->all('habilidades');
 
+        if (!$pointAllocation->validarDistribucion(
 
+            $data,
 
-        //Sumar puntos de habilidad init
-        foreach ($data as $habilidadId => $nivel) {
+            function ($habilidadId) use ($habilidadRepository) {
 
-            $habilidad = $habilidadRepository->find($habilidadId);
+                return $habilidadRepository
+                    ->find($habilidadId)
+                    ->getCategoria();
 
-            $categoria = $habilidad->getCategoria();
+            },
 
-            $puntosPorCategoria[$categoria] += (int)$nivel;
-        }
-        //Sumar puntos de habilidad fin
+            [5, 9, 13],
 
-        //validar puntos habilidades 13/9/5 ini
-        $valores = array_values($puntosPorCategoria);
-
-        sort($valores);
-
-        if ($valores !== [5,9,13]) {
+            0
+        )) {
 
             $this->addFlash(
                 'error',
@@ -225,12 +223,13 @@ public function habilidades(
                 ['id' => $personaje->getId()]
             );
         }
-        //validar puntos habilidades 13/9/5 fin
 
         
         foreach ($data as $habilidadId => $nivel) {
 
-            $habilidad = $entityManager->getRepository(Habilidad::class)->find($habilidadId);
+            //antiguo
+            //$habilidad = $entityManager->getRepository(Habilidad::class)->find($habilidadId);
+            $habilidad = $habilidadRepository->find($habilidadId);
 
             $ph = new PersonajeHabilidad();
             $ph->setPersonaje($personaje);
