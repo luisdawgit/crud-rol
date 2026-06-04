@@ -57,7 +57,19 @@ public function index(PersonajeRepository $personajeRepository): Response
             'form' => $form,
         ]);
     }
-    
+
+    private function agruparPorCategoria($rasgos)
+    {
+        $agrupados = [];
+
+        foreach ($rasgos as $rasgo) {
+            $agrupados[$rasgo->getCategoria()][] = $rasgo;
+        }
+
+        return $agrupados;
+    }
+
+
 // atributos init
 #[Route('/{id}/atributos', name: 'app_personaje_atributos', methods: ['GET','POST'])]
 public function atributos(
@@ -73,11 +85,7 @@ public function atributos(
     }
 
     $atributos = $atributoRepository->findAll();
-    $atributosAgrupados = [];
-
-    foreach ($atributos as $atributo) {
-        $atributosAgrupados[$atributo->getCategoria()][] = $atributo;
-    }
+    $atributosAgrupados = $this->agruparPorCategoria($atributos);
 
 
     // NUEVO: procesar formulario
@@ -186,11 +194,8 @@ public function habilidades(
 
     $habilidades = $habilidadRepository->findAll(); // luego lo cambiamos a HabilidadRepository
 
-    $habilidadesAgrupadas = [];
+    $habilidadesAgrupadas = $this->agruparPorCategoria($habilidades);
 
-    foreach ($habilidades as $hab) {
-        $habilidadesAgrupadas[$hab->getCategoria()][] = $hab;
-    }
 
     if ($request->isMethod('POST')) {
 
