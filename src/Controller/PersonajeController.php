@@ -13,8 +13,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 use App\Entity\PersonajeAtributo;
+use App\Entity\PersonajeTrasfondo;
 
 use App\Repository\HabilidadRepository;
+use App\Repository\TrasfondoRepository;
 use App\Entity\Habilidad;
 use App\Entity\PersonajeHabilidad;
 
@@ -70,198 +72,258 @@ public function index(PersonajeRepository $personajeRepository): Response
     }
 
 
-// atributos init
-#[Route('/{id}/atributos', name: 'app_personaje_atributos', methods: ['GET','POST'])]
-public function atributos(
-    Personaje $personaje,
-    AtributoRepository $atributoRepository,
-    Request $request,
-    EntityManagerInterface $entityManager,
-    PointAllocationService $pointAllocation
-): Response
-{
-    if ($personaje->getUsuario() !== $this->getUser()) {
-        throw $this->createAccessDeniedException();
+    // atributos init
+    #[Route('/{id}/atributos', name: 'app_personaje_atributos', methods: ['GET','POST'])]
+    public function atributos(
+        Personaje $personaje,
+        AtributoRepository $atributoRepository,
+        Request $request,
+        EntityManagerInterface $entityManager,
+        PointAllocationService $pointAllocation
+    ): Response
+    {
+        if ($personaje->getUsuario() !== $this->getUser()) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $atributos = $atributoRepository->findAll();
+        $atributosAgrupados = $this->agruparPorCategoria($atributos);
+
+
+        // NUEVO: procesar formulario
+        if ($request->isMethod('POST')) {
+
+            $data = $request->request->all('atributos');
+
+                
+            //Validacion puntos gratuitos ini
+            foreach ($data as $atributoId => $nivel) {
+
+                $atributo = $atributoRepository->find($atributoId);
+                //Validar que los Nosferatu no puedan subir Apariencia mas de 1 ini
+                if (
+                    $personaje->getClan()->getNombre() === 'Nosferatu' &&
+                    $atributo->getNombre() === 'Apariencia' &&
+                    (int)$nivel > 1
+                ) {
+                    $this->addFlash('error', 'Los Nosferatu no pueden subir Apariencia');
+                
+                    return $this->redirectToRoute('app_personaje_atributos', [
+                        'id' => $personaje->getId()
+                    ]);
+                }
+                //Validar que los Nosferatu no puedan subir Apariencia mas de 1 fin
+            }
+
+
+            //nuevo ini
+            if (!$pointAllocation->validarDistribucion(
+
+                $data,
+
+                function ($atributoId) use ($atributoRepository) {
+
+                    return $atributoRepository
+                        ->find($atributoId)
+                        ->getCategoria();
+                },
+
+                [3,5,7],
+
+                1
+            )) {
+
+                $this->addFlash(
+                    'error',
+                    'Debes repartir los puntos como 7 / 5 / 3'
+                );
+
+                return $this->redirectToRoute(
+                    'app_personaje_atributos',
+                    ['id' => $personaje->getId()]
+                );
+            }
+            //nuevo fin
+
+
+            //Validacion puntos gratuitos fin
+            
+            foreach ($data as $atributoId => $nivel) {
+
+                $atributo = $atributoRepository->find($atributoId);
+
+                $pa = new PersonajeAtributo();
+                $pa->setPersonaje($personaje);
+                $pa->setAtributo($atributo);
+                $pa->setNivel((int)$nivel);
+
+                $entityManager->persist($pa);
+
+            }
+
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_personaje_habilidades', [
+                'id' => $personaje->getId()
+            ]);
+        }
+
+        return $this->render('personaje/wizard/point_allocation.html.twig', [
+            'personaje' => $personaje,
+            'titulo' => 'Atributos',
+            'rasgosAgrupados' => $atributosAgrupados,
+            'inputName' => 'atributos',
+            'minimo' => 1,
+            'maximo' => 5
+        ]);
     }
 
-    $atributos = $atributoRepository->findAll();
-    $atributosAgrupados = $this->agruparPorCategoria($atributos);
+    // atributos fin
+
+    //habilidad init
+    #[Route('/{id}/habilidades', name: 'app_personaje_habilidades', methods: ['GET','POST'])]
+    public function habilidades(
+        Personaje $personaje,
+        HabilidadRepository $habilidadRepository,
+        Request $request,
+        EntityManagerInterface $entityManager,
+        PointAllocationService $pointAllocation
+    ): Response
+    {
+        if ($personaje->getUsuario() !== $this->getUser()) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $habilidades = $habilidadRepository->findAll(); // luego lo cambiamos a HabilidadRepository
+
+        $habilidadesAgrupadas = $this->agruparPorCategoria($habilidades);
 
 
-    // NUEVO: procesar formulario
-    if ($request->isMethod('POST')) {
+        if ($request->isMethod('POST')) {
 
-        $data = $request->request->all('atributos');
+            $data = $request->request->all('habilidades');
+
+            if (!$pointAllocation->validarDistribucion(
+
+                $data,
+
+                function ($habilidadId) use ($habilidadRepository) {
+
+                    return $habilidadRepository
+                        ->find($habilidadId)
+                        ->getCategoria();
+
+                },
+
+                [5, 9, 13],
+
+                0
+            )) {
+
+                $this->addFlash(
+                    'error',
+                    'Debes repartir las habilidades como 13 / 9 / 5'
+                );
+
+                return $this->redirectToRoute(
+                    'app_personaje_habilidades',
+                    ['id' => $personaje->getId()]
+                );
+            }
 
             
-        //Validacion puntos gratuitos ini
-        foreach ($data as $atributoId => $nivel) {
+            foreach ($data as $habilidadId => $nivel) {
 
-            $atributo = $atributoRepository->find($atributoId);
-            //Validar que los Nosferatu no puedan subir Apariencia mas de 1 ini
-            if (
-                $personaje->getClan()->getNombre() === 'Nosferatu' &&
-                $atributo->getNombre() === 'Apariencia' &&
-                (int)$nivel > 1
-            ) {
-                $this->addFlash('error', 'Los Nosferatu no pueden subir Apariencia');
-            
-                return $this->redirectToRoute('app_personaje_atributos', [
+                //antiguo
+                //$habilidad = $entityManager->getRepository(Habilidad::class)->find($habilidadId);
+                $habilidad = $habilidadRepository->find($habilidadId);
+
+                $ph = new PersonajeHabilidad();
+                $ph->setPersonaje($personaje);
+                $ph->setHabilidad($habilidad);
+                $ph->setNivel((int)$nivel);
+
+                $entityManager->persist($ph);
+            }
+
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_personaje_trasfondos', [
+                'id' => $personaje->getId()
+            ]);
+        }
+
+        return $this->render('personaje/wizard/point_allocation.html.twig', [
+            'personaje' => $personaje,
+            'titulo' => 'Habilidades',
+            'rasgosAgrupados' => $habilidadesAgrupadas,
+            'inputName' => 'habilidades',
+            'minimo' => 0,
+            'maximo' => 3
+        ]);
+    }
+    //habilidad fin
+
+
+    //Trasfondos init
+    #[Route('/{id}/trasfondos', name: 'app_personaje_trasfondos', methods: ['GET','POST'])]
+    public function trasfondos(
+        Personaje $personaje,
+        TrasfondoRepository $trasfondoRepository,
+        Request $request,
+        EntityManagerInterface $entityManager
+    ): Response
+    {
+        if ($personaje->getUsuario() !== $this->getUser()) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $trasfondos = $trasfondoRepository->findAll();
+        $trasfondosAgrupados = ['Trasfondos' => $trasfondos];
+
+        if ($request->isMethod('POST')) {
+
+            $data = $request->request->all('trasfondos');
+
+//Validacion puntos gratuitos transfondos ini
+            $totalPuntos = array_sum($data);
+            if ($totalPuntos !== 5) {
+                $this->addFlash('error', 'Debes repartir un total de 5 puntos en trasfondos');
+                
+                return $this->redirectToRoute('app_personaje_trasfondos', [
                     'id' => $personaje->getId()
                 ]);
             }
-            //Validar que los Nosferatu no puedan subir Apariencia mas de 1 fin
+//Validacion puntos gratuitos transfondos fin
+
+            foreach ($data as $trasfondoId => $nivel) {
+                $trasfondo = $trasfondoRepository->find($trasfondoId);
+
+                $pt = new PersonajeTrasfondo();
+                $pt->setPersonaje($personaje);
+                $pt->setTrasfondo($trasfondo);
+                $pt->setNivel((int)$nivel);
+
+                $entityManager->persist($pt);
+            }
+
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_personaje_show', [
+                'id' => $personaje->getId()
+            ]);
         }
 
-
-        //nuevo ini
-        if (!$pointAllocation->validarDistribucion(
-
-            $data,
-
-            function ($atributoId) use ($atributoRepository) {
-
-                return $atributoRepository
-                    ->find($atributoId)
-                    ->getCategoria();
-            },
-
-            [3,5,7],
-
-            1
-        )) {
-
-            $this->addFlash(
-                'error',
-                'Debes repartir los puntos como 7 / 5 / 3'
-            );
-
-            return $this->redirectToRoute(
-                'app_personaje_atributos',
-                ['id' => $personaje->getId()]
-            );
-        }
-        //nuevo fin
-
-
-        //Validacion puntos gratuitos fin
-        
-        foreach ($data as $atributoId => $nivel) {
-
-            $atributo = $atributoRepository->find($atributoId);
-
-            $pa = new PersonajeAtributo();
-            $pa->setPersonaje($personaje);
-            $pa->setAtributo($atributo);
-            $pa->setNivel((int)$nivel);
-
-            $entityManager->persist($pa);
-
-        }
-
-        $entityManager->flush();
-
-        return $this->redirectToRoute('app_personaje_habilidades', [
-            'id' => $personaje->getId()
+        return $this->render('personaje/wizard/point_allocation.html.twig', [
+            'personaje' => $personaje,
+            'titulo' => 'Trasfondos',
+            'rasgosAgrupados' => $trasfondosAgrupados,
+            'inputName' => 'trasfondos',
+            'minimo' => 0,
+            'maximo' => 3
         ]);
     }
-
-    return $this->render('personaje/wizard/point_allocation.html.twig', [
-        'personaje' => $personaje,
-        'titulo' => 'Atributos',
-        'rasgosAgrupados' => $atributosAgrupados,
-        'inputName' => 'atributos',
-        'minimo' => 1,
-        'maximo' => 5
-    ]);
-}
-
-// atributos fin
-
-//habilidad init
-#[Route('/{id}/habilidades', name: 'app_personaje_habilidades', methods: ['GET','POST'])]
-public function habilidades(
-    Personaje $personaje,
-    HabilidadRepository $habilidadRepository,
-    Request $request,
-    EntityManagerInterface $entityManager,
-    PointAllocationService $pointAllocation
-): Response
-{
-    if ($personaje->getUsuario() !== $this->getUser()) {
-        throw $this->createAccessDeniedException();
-    }
-
-    $habilidades = $habilidadRepository->findAll(); // luego lo cambiamos a HabilidadRepository
-
-    $habilidadesAgrupadas = $this->agruparPorCategoria($habilidades);
-
-
-    if ($request->isMethod('POST')) {
-
-        $data = $request->request->all('habilidades');
-
-        if (!$pointAllocation->validarDistribucion(
-
-            $data,
-
-            function ($habilidadId) use ($habilidadRepository) {
-
-                return $habilidadRepository
-                    ->find($habilidadId)
-                    ->getCategoria();
-
-            },
-
-            [5, 9, 13],
-
-            0
-        )) {
-
-            $this->addFlash(
-                'error',
-                'Debes repartir las habilidades como 13 / 9 / 5'
-            );
-
-            return $this->redirectToRoute(
-                'app_personaje_habilidades',
-                ['id' => $personaje->getId()]
-            );
-        }
-
-        
-        foreach ($data as $habilidadId => $nivel) {
-
-            //antiguo
-            //$habilidad = $entityManager->getRepository(Habilidad::class)->find($habilidadId);
-            $habilidad = $habilidadRepository->find($habilidadId);
-
-            $ph = new PersonajeHabilidad();
-            $ph->setPersonaje($personaje);
-            $ph->setHabilidad($habilidad);
-            $ph->setNivel((int)$nivel);
-
-            $entityManager->persist($ph);
-        }
-
-        $entityManager->flush();
-
-        return $this->redirectToRoute('app_personaje_show', [
-            'id' => $personaje->getId()
-        ]);
-    }
-
-    return $this->render('personaje/wizard/point_allocation.html.twig', [
-        'personaje' => $personaje,
-        'titulo' => 'Habilidades',
-        'rasgosAgrupados' => $habilidadesAgrupadas,
-        'inputName' => 'habilidades',
-        'minimo' => 0,
-        'maximo' => 3
-    ]);
-}
-//habilidad fin
-
+    //Trasfondos fin
 
 
     #[Route('/{id}', name: 'app_personaje_show', methods: ['GET'])]

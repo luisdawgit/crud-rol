@@ -31,4 +31,8 @@ class PointAllocationService
 
         return $valores === $distribucionEsperada;
     }
+
+
+
+
 }

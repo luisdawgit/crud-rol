@@ -54,6 +54,12 @@ class Personaje
 )]
 private Collection $personajeHabilidades;
 
+#[ORM\OneToMany(mappedBy: 'personaje', targetEntity: PersonajeTrasfondo::class, orphanRemoval: true)]
+private Collection $personajeTrasfondos;
+
+#[ORM\OneToMany(mappedBy: 'personaje', targetEntity: PersonajeVirtud::class, orphanRemoval: true)]
+private Collection $personajeVirtudes;
+
 
     public function __construct()
     {
@@ -61,6 +67,8 @@ private Collection $personajeHabilidades;
         $this->experienciaHistorials = new ArrayCollection();
         $this->personajeAtributos = new ArrayCollection();
         $this->personajeHabilidades = new ArrayCollection();
+        $this->personajeTrasfondos = new ArrayCollection();
+        $this->personajeVirtudes = new ArrayCollection();
         }
 
     public function getId(): ?int
@@ -205,6 +213,66 @@ private Collection $personajeHabilidades;
             // set the owning side to null (unless already changed)
             if ($personajeAtributo->getPersonaje() === $this) {
                 $personajeAtributo->setPersonaje(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PersonajeTrasfondo>
+     */
+    public function getPersonajeTrasfondos(): Collection
+    {
+        return $this->personajeTrasfondos;
+    }
+
+    public function addPersonajeTrasfondo(PersonajeTrasfondo $personajeTrasfondo): static
+    {
+        if (!$this->personajeTrasfondos->contains($personajeTrasfondo)) {
+            $this->personajeTrasfondos->add($personajeTrasfondo);
+            $personajeTrasfondo->setPersonaje($this);
+        }
+
+        return $this;
+    }
+
+    public function removePersonajeTrasfondo(PersonajeTrasfondo $personajeTrasfondo): static
+    {
+        if ($this->personajeTrasfondos->removeElement($personajeTrasfondo)) {
+            // set the owning side to null (unless already changed)
+            if ($personajeTrasfondo->getPersonaje() === $this) {
+                $personajeTrasfondo->setPersonaje(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PersonajeVirtud>
+     */
+    public function getPersonajeVirtudes(): Collection
+    {
+        return $this->personajeVirtudes;
+    }
+
+    public function addPersonajeVirtude(PersonajeVirtud $personajeVirtude): static
+    {
+        if (!$this->personajeVirtudes->contains($personajeVirtude)) {
+            $this->personajeVirtudes->add($personajeVirtude);
+            $personajeVirtude->setPersonaje($this);
+        }
+
+        return $this;
+    }
+
+    public function removePersonajeVirtude(PersonajeVirtud $personajeVirtude): static
+    {
+        if ($this->personajeVirtudes->removeElement($personajeVirtude)) {
+            // set the owning side to null (unless already changed)
+            if ($personajeVirtude->getPersonaje() === $this) {
+                $personajeVirtude->setPersonaje(null);
             }
         }
 

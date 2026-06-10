@@ -82,6 +82,31 @@
 {# Habilidades fin #}
 
 
+{# Trasfondos ini #}
+<h3> Trasfondos </h3>
+    <ul>
+        {% for pt in personaje.personajeTrasfondos %}
+            <li>{{ pt.trasfondo.nombre }}: {{ pt.nivel }}</li>
+        {% else %}
+            <li>No tiene trasfondos</li>
+        {% endfor %}
+    </ul>
+
+{# Trasfondos fin #}
+
+{# Virtudes ini #}
+<h3> Virtudes </h3>
+    <ul>
+        {% for pv in personaje.personajeVirtudes %}
+            <li>{{ pv.virtud.nombre }}: {{ pv.nivel }}</li>
+        {% else %}
+            <li>No tiene virtudes</li>
+        {% endfor %}
+    </ul>
+
+{# Virtudes fin #}
+
+
 
     <br>
     <a href="{{ path('app_personaje_disciplina_new', {'id': personaje.id}) }}">
