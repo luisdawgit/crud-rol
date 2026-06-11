@@ -3,24 +3,31 @@
 namespace App\Controller;
 use App\Entity\Personaje;
 use App\Form\PersonajeType;
+
 use App\Repository\PersonajeRepository;
 use App\Repository\AtributoRepository;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\VirtudRepository;
+use App\Repository\HabilidadRepository;
+use App\Repository\TrasfondoRepository;
 
+use App\Repository\ClanDisciplinaRepository;
+use App\Repository\ClanRepository;
+use App\Repository\DisciplinaRepository;
+
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 use App\Entity\PersonajeAtributo;
 use App\Entity\PersonajeTrasfondo;
-
-use App\Repository\HabilidadRepository;
-use App\Repository\TrasfondoRepository;
 use App\Entity\Habilidad;
 use App\Entity\PersonajeHabilidad;
 
 use App\Service\PointAllocationService;
+
 
 #[Route('/personaje')]
 class PersonajeController extends AbstractController
@@ -177,7 +184,6 @@ public function index(PersonajeRepository $personajeRepository): Response
             'maximo' => 5
         ]);
     }
-
     // atributos fin
 
     //habilidad init
@@ -329,7 +335,7 @@ public function index(PersonajeRepository $personajeRepository): Response
     #[Route('/{id}/virtudes', name: 'app_personaje_virtudes', methods: ['GET','POST'])]
     public function virtudes(
         Personaje $personaje,
-        \App\Repository\VirtudRepository $virtudRepository,
+        VirtudRepository $virtudRepository,
         Request $request,
         EntityManagerInterface $entityManager,
         PointAllocationService $pointAllocation
@@ -391,8 +397,19 @@ public function index(PersonajeRepository $personajeRepository): Response
             'minimo' => 1,
             'maximo' => 5
         ]);
+
+        $humanidad = $consciencia + $autocontrol;
+        $fuerzaVoluntad = $coraje;
+
+        $personaje->setHumanidad($humanidad);
+        $personaje->setFuerzaVoluntad($fuerzaVoluntad);
     }
     //virtudes fin
+
+
+
+
+
 
 
     #[Route('/{id}', name: 'app_personaje_show', methods: ['GET'])]
