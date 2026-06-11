@@ -25,6 +25,8 @@ use App\Entity\PersonajeAtributo;
 use App\Entity\PersonajeTrasfondo;
 use App\Entity\Habilidad;
 use App\Entity\PersonajeHabilidad;
+use App\Entity\PersonajeDisciplina;
+use App\Entity\PersonajeVirtud;
 
 use App\Service\PointAllocationService;
 
@@ -374,7 +376,7 @@ public function index(PersonajeRepository $personajeRepository): Response
             foreach ($data as $virtudId => $nivel) {
                 $virtud = $virtudRepository->find($virtudId);
 
-                $pv = new \App\Entity\PersonajeVirtud();
+                $pv = new PersonajeVirtud();
                 $pv->setPersonaje($personaje);
                 $pv->setVirtud($virtud);
                 $pv->setNivel((int) $nivel);
@@ -420,18 +422,28 @@ public function index(PersonajeRepository $personajeRepository): Response
             throw $this->createAccessDeniedException();
         }
 
-        $virtudes = $virtudRepository->findAll();
-        $virtudesAgrupadas = ['Virtudes' => $virtudes];
+        $disciplinas = [];
 
+        foreach (
+            $personaje->getClan()->getClanDisciplinas()
+            as $clanDisciplina
+        ) {
+            $disciplinas[] = $clanDisciplina->getDisciplina();
+        }
+
+        $disciplinasAgrupadas = [
+            'Disciplinas' => $disciplinas
+        ];
+        
         if ($request->isMethod('POST')) {
             $data = $request->request->all('virtudes');
 
             $totalPuntos = array_sum($data);
             //ultimo cambio ini
-            if (!$pointAllocation->validarTotal(
+            if ($pointAllocation->validarTotal(//if (!$pointAllocation->validarTotal(
                 $data,
-                7,
-                1
+                3,
+                0
             )) {
 
                 $this->addFlash(
@@ -446,15 +458,15 @@ public function index(PersonajeRepository $personajeRepository): Response
             }
             //ultimo cambio fin
 
-            foreach ($data as $virtudId => $nivel) {
-                $virtud = $virtudRepository->find($virtudId);
+            foreach ($data as $disciplinaId => $nivel) {
+                $disciplina = $disciplinaRepository->find($disciplinaId);
 
-                $pv = new \App\Entity\PersonajeVirtud();
-                $pv->setPersonaje($personaje);
-                $pv->setVirtud($virtud);
-                $pv->setNivel((int) $nivel);
+                $pd = new PersonajeDisciplina();
+                $pd->setPersonaje($personaje);
+                $pd->setDisciplina($disciplina);
+                $pd->setNivel((int)$nivel);
 
-                $entityManager->persist($pv);
+                $entityManager->persist($pd);
             }
 
             $entityManager->flush();
@@ -465,12 +477,11 @@ public function index(PersonajeRepository $personajeRepository): Response
         }
 
         return $this->render('personaje/wizard/point_allocation.html.twig', [
-            'personaje' => $personaje,
-            'titulo' => 'Virtudes',
-            'rasgosAgrupados' => $virtudesAgrupadas,
-            'inputName' => 'virtudes',
-            'minimo' => 1,
-            'maximo' => 5
+            'titulo' => 'Disciplinas',
+            'rasgosAgrupados' => $disciplinasAgrupadas,
+            'inputName' => 'disciplinas',
+            'minimo' => 0,
+            'maximo' => 3,
         ]);
 
         $humanidad = $consciencia + $autocontrol;
