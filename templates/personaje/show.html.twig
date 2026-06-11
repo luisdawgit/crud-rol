@@ -95,19 +95,40 @@
 {# Trasfondos fin #}
 
 {# Virtudes ini #}
+
+{% set humanidad = 0 %}
+{% set fuerzaVoluntad = 0 %}
 <h3> Virtudes </h3>
+    {# 1. mostrar nombre y nivel de virtudes #}
     <ul>
         {% for pv in personaje.personajeVirtudes %}
             <li>{{ pv.virtud.nombre }}: {{ pv.nivel }}</li>
+
+            {# 2. Si es conciencia o autocontrol, sumamos su nivel en humanidad #}
+            {% if pv.virtud.nombre == 'Autocontrol' or pv.virtud.nombre == 'Conciencia' %}
+                {% set humanidad = humanidad + pv.nivel %}
+            {% endif %}
+            {# 3. Si es coraje o autocontrol, sumamos su nivel en fuerzaVoluntad #}
+            {% if pv.virtud.nombre == 'Coraje' or pv.virtud.nombre == 'Autocontrol' %}
+                {% set fuerzaVoluntad = fuerzaVoluntad + pv.nivel %}
+            {% endif %}
+
         {% else %}
             <li>No tiene virtudes</li>
         {% endfor %}
     </ul>
+    
+    <p>HUMANIDAD</p>
+    <p><strong>Humanidad:</strong> {{ humanidad }}</p>
+    <p><strong>Fuerza de voluntad:</strong> {{ fuerzaVoluntad }}</p>
+
 
 {# Virtudes fin #}
 
 
 
+    <br>
+    <br>
     <br>
     <a href="{{ path('app_personaje_disciplina_new', {'id': personaje.id}) }}">
        + Añadir disciplina

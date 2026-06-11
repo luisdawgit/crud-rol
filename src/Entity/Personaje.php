@@ -61,6 +61,8 @@ private Collection $personajeTrasfondos;
 private Collection $personajeVirtudes;
 
 
+
+
     public function __construct()
     {
         $this->personajeDisciplinas = new ArrayCollection();

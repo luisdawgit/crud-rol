@@ -406,7 +406,80 @@ public function index(PersonajeRepository $personajeRepository): Response
     }
     //virtudes fin
 
+    //disciplinas init
+    #[Route('/{id}/disciplinas', name: 'app_personaje_virtudes', methods: ['GET','POST'])]
+    public function disciplinas(
+        Personaje $personaje,
+        DisciplinaRepository $disciplinaRepository,
+        Request $request,
+        EntityManagerInterface $entityManager,
+        PointAllocationService $pointAllocation
+    ): Response
+    {
+        if ($personaje->getUsuario() !== $this->getUser()) {
+            throw $this->createAccessDeniedException();
+        }
 
+        $virtudes = $virtudRepository->findAll();
+        $virtudesAgrupadas = ['Virtudes' => $virtudes];
+
+        if ($request->isMethod('POST')) {
+            $data = $request->request->all('virtudes');
+
+            $totalPuntos = array_sum($data);
+            //ultimo cambio ini
+            if (!$pointAllocation->validarTotal(
+                $data,
+                7,
+                1
+            )) {
+
+                $this->addFlash(
+                    'error',
+                    'Debes repartir exactamente 7 puntos en virtudes'
+                );
+
+                return $this->redirectToRoute(
+                    'app_personaje_virtudes',
+                    ['id' => $personaje->getId()]
+                );
+            }
+            //ultimo cambio fin
+
+            foreach ($data as $virtudId => $nivel) {
+                $virtud = $virtudRepository->find($virtudId);
+
+                $pv = new \App\Entity\PersonajeVirtud();
+                $pv->setPersonaje($personaje);
+                $pv->setVirtud($virtud);
+                $pv->setNivel((int) $nivel);
+
+                $entityManager->persist($pv);
+            }
+
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_personaje_show', [
+                'id' => $personaje->getId()
+            ]);
+        }
+
+        return $this->render('personaje/wizard/point_allocation.html.twig', [
+            'personaje' => $personaje,
+            'titulo' => 'Virtudes',
+            'rasgosAgrupados' => $virtudesAgrupadas,
+            'inputName' => 'virtudes',
+            'minimo' => 1,
+            'maximo' => 5
+        ]);
+
+        $humanidad = $consciencia + $autocontrol;
+        $fuerzaVoluntad = $coraje;
+
+        $personaje->setHumanidad($humanidad);
+        $personaje->setFuerzaVoluntad($fuerzaVoluntad);
+    }
+    //disciplinas fin
 
 
 
