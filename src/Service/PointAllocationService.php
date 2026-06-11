@@ -32,7 +32,20 @@ class PointAllocationService
         return $valores === $distribucionEsperada;
     }
 
+    public function validarTotal(
+        array $data,
+        int $totalEsperado,
+        int $base = 0
+    ): bool {
 
+        $total = 0;
+
+        foreach ($data as $nivel) {
+            $total += ((int)$nivel) - $base;
+        }
+
+        return $total === $totalEsperado;
+    }
 
 
 }
