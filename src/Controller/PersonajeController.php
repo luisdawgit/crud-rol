@@ -58,7 +58,8 @@ public function index(PersonajeRepository $personajeRepository): Response
             $entityManager->persist($personaje);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_personaje_atributos', [
+            //return $this->redirectToRoute('app_personaje_atributos', [
+            return $this->redirectToRoute('app_personaje_disciplinas', [
                 'id' => $personaje->getId()
             ]);
         }
@@ -241,9 +242,7 @@ public function index(PersonajeRepository $personajeRepository): Response
 
             
             foreach ($data as $habilidadId => $nivel) {
-
-                //antiguo
-                //$habilidad = $entityManager->getRepository(Habilidad::class)->find($habilidadId);
+                
                 $habilidad = $habilidadRepository->find($habilidadId);
 
                 $ph = new PersonajeHabilidad();
@@ -351,7 +350,7 @@ public function index(PersonajeRepository $personajeRepository): Response
         $virtudesAgrupadas = ['Virtudes' => $virtudes];
 
         if ($request->isMethod('POST')) {
-            $data = $request->request->all('virtudes');
+            $data = $request->request->all('virtudes');//disciplinas
 
             $totalPuntos = array_sum($data);
             //ultimo cambio ini
@@ -409,7 +408,7 @@ public function index(PersonajeRepository $personajeRepository): Response
     //virtudes fin
 
     //disciplinas init
-    #[Route('/{id}/disciplinas', name: 'app_personaje_virtudes', methods: ['GET','POST'])]
+    #[Route('/{id}/disciplinas', name: 'app_personaje_disciplinas', methods: ['GET','POST'])]
     public function disciplinas(
         Personaje $personaje,
         DisciplinaRepository $disciplinaRepository,
@@ -436,11 +435,11 @@ public function index(PersonajeRepository $personajeRepository): Response
         ];
         
         if ($request->isMethod('POST')) {
-            $data = $request->request->all('virtudes');
+            $data = $request->request->all('disciplinas');
 
             $totalPuntos = array_sum($data);
             //ultimo cambio ini
-            if ($pointAllocation->validarTotal(//if (!$pointAllocation->validarTotal(
+            if (!$pointAllocation->validarTotal(
                 $data,
                 3,
                 0
@@ -448,11 +447,11 @@ public function index(PersonajeRepository $personajeRepository): Response
 
                 $this->addFlash(
                     'error',
-                    'Debes repartir exactamente 7 puntos en virtudes'
+                    'Debes repartir exactamente 3 puntos en disciplinas'
                 );
 
                 return $this->redirectToRoute(
-                    'app_personaje_virtudes',
+                    'app_personaje_disciplinas',
                     ['id' => $personaje->getId()]
                 );
             }
@@ -471,9 +470,10 @@ public function index(PersonajeRepository $personajeRepository): Response
 
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_personaje_show', [
-                'id' => $personaje->getId()
-            ]);
+            return $this->redirectToRoute(
+                'app_personaje_atributos',
+                ['id' => $personaje->getId()]
+            );
         }
 
         return $this->render('personaje/wizard/point_allocation.html.twig', [
