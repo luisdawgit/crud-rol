@@ -4,11 +4,16 @@ namespace App\Controller;
 use App\Entity\Personaje;
 use App\Form\PersonajeType;
 
-use App\Repository\PersonajeRepository;
 use App\Repository\AtributoRepository;
 use App\Repository\VirtudRepository;
 use App\Repository\HabilidadRepository;
 use App\Repository\TrasfondoRepository;
+use App\Repository\PersonajeRepository;
+use App\Repository\PersonajeAtributoRepository;
+use App\Repository\PersonajeHabilidadRepository;
+use App\Repository\PersonajeTrasfondoRepository;
+use App\Repository\PersonajeVirtudRepository;
+use App\Repository\PersonajeDisciplinaRepository;
 
 use App\Repository\ClanDisciplinaRepository;
 use App\Repository\ClanRepository;
@@ -53,12 +58,24 @@ public function index(PersonajeRepository $personajeRepository): Response
 
         if ($form->isSubmitted() && $form->isValid()) {
             
-            $personaje->setUsuario($this->getUser());//Añadido para asignar el usuario actual al personaje creado
+            //Asigna el usuario actual al personaje creado
+            $personaje->setUsuario($this->getUser());
             
+            //Comprobar nombre ini
+            $existente = $entityManager->getRepository(Personaje::class)->findOneBy([
+                'nombre' => $personaje->getNombre(),
+                'usuario' => $this->getUser()
+            ]);
+
+            if ($existente) {
+                $this->addFlash('error', 'Ya tienes un personaje con ese nombre. Por favor, elige otro nombre.');
+                return $this->redirectToRoute('app_personaje_new');//--
+            }
+            //Comprobar nombre fin
+
             $entityManager->persist($personaje);
             $entityManager->flush();
 
-            //return $this->redirectToRoute('app_personaje_atributos', [
             return $this->redirectToRoute('app_personaje_disciplinas', [
                 'id' => $personaje->getId()
             ]);
@@ -87,6 +104,7 @@ public function index(PersonajeRepository $personajeRepository): Response
     public function atributos(
         Personaje $personaje,
         AtributoRepository $atributoRepository,
+        PersonajeAtributoRepository $personajeAtributoRepository,//
         Request $request,
         EntityManagerInterface $entityManager,
         PointAllocationService $pointAllocation
@@ -100,7 +118,7 @@ public function index(PersonajeRepository $personajeRepository): Response
         $atributosAgrupados = $this->agruparPorCategoria($atributos);
 
 
-        // NUEVO: procesar formulario
+        // procesar formulario
         if ($request->isMethod('POST')) {
 
             $data = $request->request->all('atributos');
@@ -125,21 +143,15 @@ public function index(PersonajeRepository $personajeRepository): Response
                 //Validar que los Nosferatu no puedan subir Apariencia mas de 1 fin
             }
 
-
-            //nuevo ini
             if (!$pointAllocation->validarDistribucion(
-
                 $data,
-
                 function ($atributoId) use ($atributoRepository) {
 
                     return $atributoRepository
                         ->find($atributoId)
                         ->getCategoria();
                 },
-
                 [3,5,7],
-
                 1
             )) {
 
@@ -153,22 +165,28 @@ public function index(PersonajeRepository $personajeRepository): Response
                     ['id' => $personaje->getId()]
                 );
             }
-            //nuevo fin
-
-
+            
             //Validacion puntos gratuitos fin
             
             foreach ($data as $atributoId => $nivel) {
 
                 $atributo = $atributoRepository->find($atributoId);
+                //Evitar duplicados y actualizar si ya existe un registro ini
+                $pa = $personajeAtributoRepository->findOneBy([
+                    'personaje' => $personaje,
+                    'atributo' => $atributo
+                ]);
 
-                $pa = new PersonajeAtributo();
-                $pa->setPersonaje($personaje);
-                $pa->setAtributo($atributo);
+                if(!$pa)
+                {
+                    $pa = new PersonajeAtributo();
+                    $pa->setPersonaje($personaje);
+                    $pa->setAtributo($atributo);
+                }
+                //Evitar duplicados y actualizar si ya existe un registro fin
+
                 $pa->setNivel((int)$nivel);
-
                 $entityManager->persist($pa);
-
             }
 
             $entityManager->flush();
@@ -194,6 +212,7 @@ public function index(PersonajeRepository $personajeRepository): Response
     public function habilidades(
         Personaje $personaje,
         HabilidadRepository $habilidadRepository,
+        PersonajeHabilidadRepository $personajeHabilidadRepository,
         Request $request,
         EntityManagerInterface $entityManager,
         PointAllocationService $pointAllocation
@@ -213,9 +232,7 @@ public function index(PersonajeRepository $personajeRepository): Response
             $data = $request->request->all('habilidades');
 
             if (!$pointAllocation->validarDistribucion(
-
                 $data,
-
                 function ($habilidadId) use ($habilidadRepository) {
 
                     return $habilidadRepository
@@ -223,9 +240,7 @@ public function index(PersonajeRepository $personajeRepository): Response
                         ->getCategoria();
 
                 },
-
                 [5, 9, 13],
-
                 0
             )) {
 
@@ -240,14 +255,23 @@ public function index(PersonajeRepository $personajeRepository): Response
                 );
             }
 
-            
             foreach ($data as $habilidadId => $nivel) {
-                
+
                 $habilidad = $habilidadRepository->find($habilidadId);
 
-                $ph = new PersonajeHabilidad();
-                $ph->setPersonaje($personaje);
-                $ph->setHabilidad($habilidad);
+                //Evitar duplicados y actualizar si ya existe un registro ini
+                $ph = $personajeHabilidadRepository->findOneBy([
+                    'personaje' => $personaje,
+                    'habilidad' => $habilidad
+                ]);
+
+                if (!$ph) {
+                    $ph = new PersonajeHabilidad();
+                    $ph->setPersonaje($personaje);
+                    $ph->setHabilidad($habilidad);
+                }
+                //Evitar duplicados y actualizar si ya existe un registro fin
+
                 $ph->setNivel((int)$nivel);
 
                 $entityManager->persist($ph);
@@ -277,6 +301,7 @@ public function index(PersonajeRepository $personajeRepository): Response
     public function trasfondos(
         Personaje $personaje,
         TrasfondoRepository $trasfondoRepository,
+        PersonajeTrasfondoRepository $personajeTrasfondoRepository,
         Request $request,
         EntityManagerInterface $entityManager
     ): Response
@@ -306,9 +331,19 @@ public function index(PersonajeRepository $personajeRepository): Response
             foreach ($data as $trasfondoId => $nivel) {
                 $trasfondo = $trasfondoRepository->find($trasfondoId);
 
-                $pt = new PersonajeTrasfondo();
-                $pt->setPersonaje($personaje);
-                $pt->setTrasfondo($trasfondo);
+                //Evitar duplicados y actualizar si ya existe un registro ini
+                $pt = $personajeTrasfondoRepository->findOneBy([
+                    'personaje' => $personaje,
+                    'trasfondo' => $trasfondo
+                ]);
+
+                if (!$pt) {
+                    $pt = new PersonajeTrasfondo();
+                    $pt->setPersonaje($personaje);
+                    $pt->setTrasfondo($trasfondo);
+                }
+                //Evitar duplicados y actualizar si ya existe un registro fin
+
                 $pt->setNivel((int)$nivel);
 
                 $entityManager->persist($pt);
@@ -337,6 +372,7 @@ public function index(PersonajeRepository $personajeRepository): Response
     public function virtudes(
         Personaje $personaje,
         VirtudRepository $virtudRepository,
+        PersonajeVirtudRepository $personajeVirtudRepository,
         Request $request,
         EntityManagerInterface $entityManager,
         PointAllocationService $pointAllocation
@@ -375,9 +411,19 @@ public function index(PersonajeRepository $personajeRepository): Response
             foreach ($data as $virtudId => $nivel) {
                 $virtud = $virtudRepository->find($virtudId);
 
-                $pv = new PersonajeVirtud();
-                $pv->setPersonaje($personaje);
-                $pv->setVirtud($virtud);
+                //Evitar duplicados y actualizar si ya existe un registro ini
+                $pv = $personajeVirtudRepository->findOneBy([
+                    'personaje' => $personaje,
+                    'virtud' => $virtud
+                ]);
+
+                if (!$pv) {
+                    $pv = new PersonajeVirtud();
+                    $pv->setPersonaje($personaje);
+                    $pv->setVirtud($virtud);
+                }
+                //Evitar duplicados y actualizar si ya existe un registro fin
+
                 $pv->setNivel((int) $nivel);
 
                 $entityManager->persist($pv);
@@ -412,6 +458,7 @@ public function index(PersonajeRepository $personajeRepository): Response
     public function disciplinas(
         Personaje $personaje,
         DisciplinaRepository $disciplinaRepository,
+        PersonajeDisciplinaRepository $personajeDisciplinaRepository,
         Request $request,
         EntityManagerInterface $entityManager,
         PointAllocationService $pointAllocation
@@ -460,9 +507,19 @@ public function index(PersonajeRepository $personajeRepository): Response
             foreach ($data as $disciplinaId => $nivel) {
                 $disciplina = $disciplinaRepository->find($disciplinaId);
 
-                $pd = new PersonajeDisciplina();
-                $pd->setPersonaje($personaje);
-                $pd->setDisciplina($disciplina);
+                //Evitar duplicados y actualizar si ya existe un registro ini
+                $pd = $personajeDisciplinaRepository->findOneBy([
+                    'personaje' => $personaje,
+                    'disciplina' => $disciplina
+                ]);
+
+                if (!$pd) {
+                    $pd = new PersonajeDisciplina();
+                    $pd->setPersonaje($personaje);
+                    $pd->setDisciplina($disciplina);
+                }
+                //Evitar duplicados y actualizar si ya existe un registro fin
+
                 $pd->setNivel((int)$nivel);
 
                 $entityManager->persist($pd);
@@ -491,8 +548,6 @@ public function index(PersonajeRepository $personajeRepository): Response
         $personaje->setFuerzaVoluntad($fuerzaVoluntad);
     }
     //disciplinas fin
-
-
 
 
 
