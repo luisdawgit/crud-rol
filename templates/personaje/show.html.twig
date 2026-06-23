@@ -1,145 +1,145 @@
-{% extends 'base.html.twig' %}
 
-{% block title %}Personaje{% endblock %}
+    {% extends 'base.html.twig' %}
 
-{% block body %}
-    <h1>Personaje</h1>
+    {% block title %}Personaje{% endblock %}
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ personaje.id }}</td>
-            </tr>
-            <tr>
-                <th>Experiencia</th>
-                <td>{{ personaje.experiencia }}</td>
-            </tr>
-            <tr>
-                <th>Nombre</th>
-                <td>{{ personaje.nombre }}</td>
-            </tr>
-            <tr>
-                <th>Clan</th>
-                <td>{{ personaje.clan }}</td>
-            </tr>
-        </tbody>
-    </table>
 
-    <h2>Disciplinas</h2>
+    {% block body %}
+        <h1 class="text-4xl font-bold text-red-600">Personaje</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Disciplina</th>
-                <th>Nivel</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for pd in personaje.personajeDisciplinas %}
+        <table class="table">
+            <tbody>
                 <tr>
-                    <td>{{ pd.disciplina.nombre }}</td>
-                    <td>{{ pd.nivel }}</td>
+                    <th>Id</th>
+                    <td>{{ personaje.id }}</td>
                 </tr>
+                <tr>
+                    <th>Experiencia</th>
+                    <td>{{ personaje.experiencia }}</td>
+                </tr>
+                <tr>
+                    <th>Nombre</th>
+                    <td>{{ personaje.nombre }}</td>
+                </tr>
+                <tr>
+                    <th>Clan</th>
+                    <td>{{ personaje.clan }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Disciplinas</h2>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Disciplina</th>
+                    <th>Nivel</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pd in personaje.personajeDisciplinas %}
+                    <tr>
+                        <td>{{ pd.disciplina.nombre }}</td>
+                        <td>{{ pd.nivel }}</td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="2">No tiene disciplinas</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <br>
+
+
+    {# Atributos ini #}
+        {% set categorias = ['Fisico','Social','Mental'] %}
+
+        <h3> Atributos </h3>
+        {% for cat in categorias %}
+            <h2>{{cat}}</h2>
+            <ul>
+                {% for pa in personaje.personajeAtributos %}
+                    {% if pa.atributo.categoria == cat %}
+                        <li>{{ pa.atributo.nombre }}: {{ pa.nivel }}</li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        {% endfor %}
+
+    {# Atributos fin #}
+
+
+    {# Habilidades ini #}
+    <h3> Habilidades </h3>
+        {% set categorias = ['Talentos','Tecnicas','Conocimientos'] %}
+        {% for cat in categorias  %}
+        <h2> {{ cat }} </h2>
+            <ul>
+                {% for ph in personaje.personajeHabilidades %}
+                    {% if ph.habilidad.categoria == cat %}
+                        <li> {{ ph.habilidad.nombre }}:{{ ph.nivel }} </li>        
+                    {% endif  %}
+                {% endfor  %}
+            </ul>
+
+        {% endfor  %}
+
+    {# Habilidades fin #}
+
+
+    {# Trasfondos ini #}
+    <h3> Trasfondos </h3>
+        <ul>
+            {% for pt in personaje.personajeTrasfondos %}
+                <li>{{ pt.trasfondo.nombre }}: {{ pt.nivel }}</li>
             {% else %}
-                <tr>
-                    <td colspan="2">No tiene disciplinas</td>
-                </tr>
+                <li>No tiene trasfondos</li>
             {% endfor %}
-        </tbody>
-    </table>
-    <br>
+        </ul>
 
-{# Atributos ini #}
-    {% set categorias = ['Fisico','Social','Mental'] %}
+    {# Trasfondos fin #}
 
-    <h3> Atributos </h3>
-    {% for cat in categorias %}
-        <h2>{{cat}}</h2>
+    {# Virtudes ini #}
+
+    {% set humanidad = 0 %}
+    {% set fuerzaVoluntad = 0 %}
+    <h3> Virtudes </h3>
+        {# 1. mostrar nombre y nivel de virtudes #}
         <ul>
-            {% for pa in personaje.personajeAtributos %}
-                {% if pa.atributo.categoria == cat %}
-                    <li>{{ pa.atributo.nombre }}: {{ pa.nivel }}</li>
+            {% for pv in personaje.personajeVirtudes %}
+                <li>{{ pv.virtud.nombre }}: {{ pv.nivel }}</li>
+
+                {# 2. Si es conciencia o autocontrol, sumamos su nivel en humanidad #}
+                {% if pv.virtud.nombre == 'Autocontrol' or pv.virtud.nombre == 'Conciencia' %}
+                    {% set humanidad = humanidad + pv.nivel %}
                 {% endif %}
+                {# 3. Si es coraje o autocontrol, sumamos su nivel en fuerzaVoluntad #}
+                {% if pv.virtud.nombre == 'Coraje' or pv.virtud.nombre == 'Autocontrol' %}
+                    {% set fuerzaVoluntad = fuerzaVoluntad + pv.nivel %}
+                {% endif %}
+
+            {% else %}
+                <li>No tiene virtudes</li>
             {% endfor %}
         </ul>
-    {% endfor %}
+        
+        <p>HUMANIDAD</p>
+        <p><strong>Humanidad:</strong> {{ humanidad }}</p>
+        <p><strong>Fuerza de voluntad:</strong> {{ fuerzaVoluntad }}</p>
 
-{# Atributos fin #}
+    {# Virtudes fin #}
 
+        <br>
+        <br>
+        <br>
+        <a href="{{ path('app_personaje_disciplina_new', {'id': personaje.id}) }}">
+        + Añadir disciplina
+        </a>
+        <br><br>
 
-{# Habilidades ini #}
-<h3> Habilidades </h3>
-    {% set categorias = ['Talentos','Tecnicas','Conocimientos'] %}
-    {% for cat in categorias  %}
-    <h2> {{ cat }} </h2>
-        <ul>
-            {% for ph in personaje.personajeHabilidades %}
-                {% if ph.habilidad.categoria == cat %}
-                    <li> {{ ph.habilidad.nombre }}:{{ ph.nivel }} </li>        
-                {% endif  %}
-            {% endfor  %}
-        </ul>
+        <a href="{{ path('app_personaje_index') }}">BACK TO LIST</a>
+        <br><br>
 
-    {% endfor  %}
-
-{# Habilidades fin #}
-
-
-{# Trasfondos ini #}
-<h3> Trasfondos </h3>
-    <ul>
-        {% for pt in personaje.personajeTrasfondos %}
-            <li>{{ pt.trasfondo.nombre }}: {{ pt.nivel }}</li>
-        {% else %}
-            <li>No tiene trasfondos</li>
-        {% endfor %}
-    </ul>
-
-{# Trasfondos fin #}
-
-{# Virtudes ini #}
-
-{% set humanidad = 0 %}
-{% set fuerzaVoluntad = 0 %}
-<h3> Virtudes </h3>
-    {# 1. mostrar nombre y nivel de virtudes #}
-    <ul>
-        {% for pv in personaje.personajeVirtudes %}
-            <li>{{ pv.virtud.nombre }}: {{ pv.nivel }}</li>
-
-            {# 2. Si es conciencia o autocontrol, sumamos su nivel en humanidad #}
-            {% if pv.virtud.nombre == 'Autocontrol' or pv.virtud.nombre == 'Conciencia' %}
-                {% set humanidad = humanidad + pv.nivel %}
-            {% endif %}
-            {# 3. Si es coraje o autocontrol, sumamos su nivel en fuerzaVoluntad #}
-            {% if pv.virtud.nombre == 'Coraje' or pv.virtud.nombre == 'Autocontrol' %}
-                {% set fuerzaVoluntad = fuerzaVoluntad + pv.nivel %}
-            {% endif %}
-
-        {% else %}
-            <li>No tiene virtudes</li>
-        {% endfor %}
-    </ul>
-    
-    <p>HUMANIDAD</p>
-    <p><strong>Humanidad:</strong> {{ humanidad }}</p>
-    <p><strong>Fuerza de voluntad:</strong> {{ fuerzaVoluntad }}</p>
-
-
-{# Virtudes fin #}
-
-
-
-    <br>
-    <br>
-    <br>
-    <a href="{{ path('app_personaje_disciplina_new', {'id': personaje.id}) }}">
-       + Añadir disciplina
-    </a>
-    <br><br>
-
-    <a href="{{ path('app_personaje_index') }}">BACK TO LIST</a>
-    <br><br>
-
-{% endblock %}
+    {% endblock %}

@@ -3,44 +3,89 @@
 {% block title %}Personaje index{% endblock %}
 
 {% block body %}
-    <h1>Personaje index</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Nombre</th>
-                <th>Clan</th>
-                <th>Experiencia</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for personaje in personajes %}
-            <tr>
-                <td>{{ personaje.nombre }}</td>
-                <td>{{ personaje.clan }}</td>
-                <td>{{ personaje.experiencia }}</td>
-                <td>
-                    <a href="{{ path('app_personaje_show', {'id': personaje.id}) }}">show</a>
-                    <a href="{{ path('app_personaje_edit', {'id': personaje.id}) }}">edit</a>
-                </td>
-                <td>
-                        {# boton borrar#}
-                    {{ include('personaje/_delete_form.html.twig') }}
-                </td>
+<div class="max-w-6xl mx-auto p-6">
 
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="4">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-    <br><br>
-    
-    <a href="{{ path('app_personaje_new') }}">CREATE NEW</a>
-    <br><br>
+    <div class="flex justify-between items-center mb-6">
 
+        <h1 class="text-3xl font-bold">
+            Mis Personajes
+        </h1>
+
+        <a
+            href="{{ path('app_personaje_new') }}"
+            class="bg-red-700 text-white px-4 py-2 rounded hover:bg-red-800"
+        >
+            + Nuevo personaje
+        </a>
+
+    </div>
+
+    <div class="bg-white rounded-lg shadow overflow-hidden">
+
+        <table class="w-full">
+
+            <thead class="bg-slate-800 text-white">
+
+                <tr>
+                    <th class="p-3 text-left">Nombre</th>
+                    <th class="p-3 text-left">Clan</th>
+                    <th class="p-3 text-left">Experiencia</th>
+                    <th class="p-3 text-left">Acciones</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+            {% for personaje in personajes %}
+
+                <tr class="border-b">
+
+                    <td class="p-3">{{ personaje.nombre }}</td>
+
+                    <td class="p-3">{{ personaje.clan }}</td>
+
+                    <td class="p-3">{{ personaje.experiencia }}</td>
+
+                    <td class="p-3 space-x-3">
+
+                        <a
+                            href="{{ path('app_personaje_show', {'id': personaje.id}) }}"
+                            class="text-blue-600 hover:underline"
+                        >
+                            Ver
+                        </a>
+
+                        <a
+                            href="{{ path('app_personaje_edit', {'id': personaje.id}) }}"
+                            class="text-green-600 hover:underline"
+                        >
+                            Editar
+                        </a>
+
+                    </td>
+
+                </tr>
+
+            {% else %}
+
+                <tr>
+
+                    <td colspan="4" class="p-6 text-center text-gray-500">
+                        No hay personajes todavía
+                    </td>
+
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
 
 {% endblock %}

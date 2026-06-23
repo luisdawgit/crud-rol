@@ -1,37 +1,59 @@
-{#Pequeño menu comun a todas las seecciones para hacer logout y volver a Personajes#}
+{#Pequeño menu comun a todas las secciones para hacer logout y volver a Personajes#}
 {% if app.user %}
-    <div style="margin-bottom: 10px;">
-        Bienvenido a tu sesion
-        <a style=" font-weight: bold; font-size: 14pt; color: Blue;"> {{ app.user.userIdentifier }} <a>
-<br>
-        {#para navegar entre secciones#}
-        <a href="{{ path('app_personaje_index') }}">
-            Mis personajes
-        </a>
+<nav class="bg-slate-900 text-white shadow-md">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
 
-        |
-        <a href="{{ path('app_logout') }}">
-            Logout
-        </a>
+        <div>
+            <span class="text-sm text-slate-300">
+                Bienvenido
+            </span>
+
+            <span class="font-bold text-red-400">
+                {{ app.user.userIdentifier }}
+            </span>
+        </div>
+
+        <div class="space-x-4">
+            <a
+                href="{{ path('app_personaje_index') }}"
+                class="hover:text-red-400"
+            >
+                Mis personajes
+            </a>
+
+            <a
+                href="{{ path('app_logout') }}"
+                class="hover:text-red-400"
+            >
+                Logout
+            </a>
+        </div>
+
     </div>
+</nav>
 {% endif %}
 
 <!DOCTYPE html>
+
 <html>
     <head>
         <meta charset="UTF-8">
         <title>{% block title %}Welcome!{% endblock %}</title>
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
         {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
+        <link rel="stylesheet" href="{{ asset('styles/app.css') }}">
         {% block stylesheets %}
-            {{ encore_entry_link_tags('app') }}
+
         {% endblock %}
 
         {% block javascripts %}
-            {{ encore_entry_script_tags('app') }}
+
         {% endblock %}
     </head>
-    <body>
+
+    <body class="bg-slate-100 min-h-screen">
         {% block body %}{% endblock %}
     </body>
+
 </html>
+
