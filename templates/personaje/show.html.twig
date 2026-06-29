@@ -196,19 +196,126 @@
         {# ==========
            DISCIPLINAS
            ========== #}
+<section class="bg-white rounded-xl shadow-md p-6 mb-8">
+    <h2 class="text-2xl font-semibold text-red-800 border-b pb-2 mb-6">
+        Disciplinas
+    </h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {% if personaje.personajeDisciplinas|length %}
+            {% for pd in personaje.personajeDisciplinas %}
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-700">{{ pd.disciplina.nombre }}</span>
+
+                    <div class="flex gap-1">
+                        {% for i in 1..5 %}
+                            {% if i <= pd.nivel %}
+                                <span class="inline-block w-4 h-4 rounded-full bg-black"></span>
+                            {% else %}
+                                <span class="inline-block w-4 h-4 rounded-full border border-black"></span>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="text-gray-500">No tiene disciplinas</p>
+        {% endif %}
+    </div>
+</section>
+
 
         {# ==========
            TRASFONDOS
            ========== #}
+<section class="bg-white rounded-xl shadow-md p-6 mb-8">
+    <h2 class="text-2xl font-semibold text-red-800 border-b pb-2 mb-6">
+        Trasfondos
+    </h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {% if personaje.personajeTrasfondos|length %}
+            {% for pt in personaje.personajeTrasfondos %}
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-700">{{ pt.trasfondo.nombre }}</span>
+
+                    <div class="flex gap-1">
+                        {% for i in 1..5 %}
+                            {% if i <= pt.nivel %}
+                                <span class="inline-block w-4 h-4 rounded-full bg-black"></span>
+                            {% else %}
+                                <span class="inline-block w-4 h-4 rounded-full border border-black"></span>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="text-gray-500">No tiene trasfondos</p>
+        {% endif %}
+    </div>
+</section>
 
         {# ==========
            VIRTUDES
            ========== #}
+<section class="bg-white rounded-xl shadow-md p-6 mb-8">
+    <h2 class="text-2xl font-semibold text-red-800 border-b pb-2 mb-6">
+        Virtudes
+    </h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {% if personaje.personajeVirtudes|length %}
+            {% for pv in personaje.personajeVirtudes %}
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-700">{{ pv.virtud.nombre }}</span>
+
+                    <div class="flex gap-1">
+                        {% for i in 1..5 %}
+                            {% if i <= pv.nivel %}
+                                <span class="inline-block w-4 h-4 rounded-full bg-black"></span>
+                            {% else %}
+                                <span class="inline-block w-4 h-4 rounded-full border border-black"></span>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="text-gray-500">No tiene virtudes</p>
+        {% endif %}
+    </div>
+</section>
 
         {# ==========
            HUMANIDAD
            ========== #}
+{% set humanidad = 0 %}
+{% for pv in personaje.personajeVirtudes %}
+    {% if pv.virtud.nombre in ['Autocontrol', 'Conciencia'] %}
+        {% set humanidad = humanidad + pv.nivel %}
+    {% endif %}
+{% endfor %}
 
+<section class="bg-white rounded-xl shadow-md p-6 mb-8">
+    <h2 class="text-2xl font-semibold text-red-800 border-b pb-2 mb-6">
+        Humanidad
+    </h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="rounded-xl border border-slate-200 p-6 bg-slate-50">
+            <p class="text-sm text-gray-500 uppercase tracking-wide mb-2">
+                Total de Humanidad
+            </p>
+            <p class="text-4xl font-bold text-red-900">
+                {{ humanidad }}
+            </p>
+            <p class="text-sm text-gray-500 mt-2">
+                Suma de Autocontrol y Conciencia
+            </p>
+        </div>
+    </div>
+</section>
     </div>
 </div>
 
