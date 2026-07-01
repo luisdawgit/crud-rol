@@ -1,145 +1,383 @@
+{% extends 'base.html.twig' %}
 
-    {% extends 'base.html.twig' %}
+{% block body %}
 
-    {% block title %}Personaje{% endblock %}
+<div class="min-h-screen bg-gray-100">
 
+    <div class="max-w-7xl mx-auto px-6 py-8">
 
-    {% block body %}
-        <h1 class="text-4xl font-bold text-red-600">Personaje</h1>
+        <a href="{{ path('app_personaje_index') }}"
+            class="inline-flex items-center text-red-700 hover:text-red-900 font-medium mb-6">
+            ← Volver a mis personajes
+        </a>
 
-        <table class="table">
-            <tbody>
-                <tr>
-                    <th>Id</th>
-                    <td>{{ personaje.id }}</td>
-                </tr>
-                <tr>
-                    <th>Experiencia</th>
-                    <td>{{ personaje.experiencia }}</td>
-                </tr>
-                <tr>
-                    <th>Nombre</th>
-                    <td>{{ personaje.nombre }}</td>
-                </tr>
-                <tr>
-                    <th>Clan</th>
-                    <td>{{ personaje.clan }}</td>
-                </tr>
-            </tbody>
-        </table>
+        {# ==============================
+           CABECERA DEL PERSONAJE
+           ============================== #}
+        <section class="bg-white rounded-xl shadow-lg p-8 mb-8">
 
-        <h2>Disciplinas</h2>
+            <div class="flex justify-between items-start">
 
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Disciplina</th>
-                    <th>Nivel</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for pd in personaje.personajeDisciplinas %}
-                    <tr>
-                        <td>{{ pd.disciplina.nombre }}</td>
-                        <td>{{ pd.nivel }}</td>
-                    </tr>
-                {% else %}
-                    <tr>
-                        <td colspan="2">No tiene disciplinas</td>
-                    </tr>
+                <div>
+
+                    <h1 class="text-5xl font-serif text-red-900 mb-4">
+                        {{ personaje.nombre }}
+                    </h1>
+
+                    <div class="flex gap-8 text-lg">
+
+                        <div>
+                            <span class="font-semibold">Clan:</span>
+                            <span class="text-red-700">
+                                {{ personaje.clan.nombre }}
+                            </span>
+                        </div>
+
+                        <div>
+                            <span class="font-semibold">
+                                Experiencia:
+                            </span>
+                            {{ personaje.experiencia }}
+                        </div>
+
+                    </div>
+
+                </div>
+
+                {# Aquí podremos colocar más adelante
+                   el símbolo del clan o una ilustración #}
+
+                <div class="text-gray-300 text-7xl">
+                    🦇
+                </div>
+
+            </div>
+
+        </section>
+
+        {# ==========
+           ATRIBUTOS
+           ========== #}
+        <section class="bg-white rounded-xl shadow-md p-6 mb-8">
+
+            <h2 class="text-2xl font-semibold text-red-800 border-b pb-2 mb-6">
+                Atributos
+            </h2>
+
+            {% set categorias = ['Fisico','Social','Mental'] %}
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+                {% for cat in categorias %}
+
+                    <div>
+
+                        <h3 class="text-xl font-bold text-gray-800 mb-4">
+                            {{ cat }}
+                        </h3>
+
+                        <div class="space-y-3">
+
+                            {% for pa in personaje.personajeAtributos %}
+
+                                {% if pa.atributo.categoria == cat %}
+
+                                    <div class="flex justify-between items-center">
+
+                                        <span class="text-gray-700">
+                                            {{ pa.atributo.nombre }}
+                                        </span>
+
+                                        <div class="flex gap-1">
+
+                                            {% for i in 1..5 %}
+
+                                                {% if i <= pa.nivel %}
+                                                    {# Puntos como circulitos #}
+                                                    <span class="inline-block w-3 h-3 rounded-full bg-black"></span>
+
+                                                {% else %}
+
+                                                    <span class="inline-block w-3 h-3 rounded-full border border-black"></span>
+
+                                                {% endif %}
+
+                                            {% endfor %}
+
+                                        </div>
+                                    </div>
+
+                                {% endif %}
+
+                            {% endfor %}
+
+                        </div>
+
+                    </div>
+
                 {% endfor %}
-            </tbody>
-        </table>
-        <br>
+
+            </div>
+
+        </section>
 
 
-    {# Atributos ini #}
-        {% set categorias = ['Fisico','Social','Mental'] %}
+        {# ==========
+           HABILIDADES
+           ========== #}
+        <section class="bg-white rounded-xl shadow-md p-6 mb-8">
 
-        <h3> Atributos </h3>
-        {% for cat in categorias %}
-            <h2>{{cat}}</h2>
-            <ul>
-                {% for pa in personaje.personajeAtributos %}
-                    {% if pa.atributo.categoria == cat %}
-                        <li>{{ pa.atributo.nombre }}: {{ pa.nivel }}</li>
-                    {% endif %}
+            <h2 class="text-2xl font-semibold text-red-800 border-b pb-2 mb-6">
+                Habilidades
+            </h2>
+
+            {% set categorias = ['Talentos','Tecnicas','Conocimientos'] %}
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+                {% for cat in categorias %}
+
+                    <div>
+
+                        <h3 class="text-xl font-bold text-gray-800 mb-4">
+                            {{ cat }}
+                        </h3>
+
+                        <div class="space-y-3">
+
+                            {% for ph in personaje.personajeHabilidades %}
+
+                                {% if ph.habilidad.categoria == cat %}
+
+                                    <div class="flex justify-between items-center">
+
+                                        <span class="text-gray-700">
+                                            {{ ph.habilidad.nombre }}
+                                        </span>
+
+                                        <div class="flex gap-1">
+
+                                            {% for i in 1..5 %}
+
+                                                {% if i <= ph.nivel %}
+                                                    {# Puntos como circulitos #}
+                                                    <span class="inline-block w-3 h-3 rounded-full bg-black"></span>
+
+                                                {% else %}
+
+                                                    <span class="inline-block w-3 h-3 rounded-full border border-black"></span>
+
+                                                {% endif %}
+
+                                            {% endfor %}
+
+                                        </div>
+                                    </div>
+
+                                {% endif %}
+
+                            {% endfor %}
+
+                        </div>
+
+                    </div>
+
                 {% endfor %}
-            </ul>
-        {% endfor %}
 
-    {# Atributos fin #}
+            </div>
 
-
-    {# Habilidades ini #}
-    <h3> Habilidades </h3>
-        {% set categorias = ['Talentos','Tecnicas','Conocimientos'] %}
-        {% for cat in categorias  %}
-        <h2> {{ cat }} </h2>
-            <ul>
-                {% for ph in personaje.personajeHabilidades %}
-                    {% if ph.habilidad.categoria == cat %}
-                        <li> {{ ph.habilidad.nombre }}:{{ ph.nivel }} </li>        
-                    {% endif  %}
-                {% endfor  %}
-            </ul>
-
-        {% endfor  %}
-
-    {# Habilidades fin #}
+        </section>
 
 
-    {# Trasfondos ini #}
-    <h3> Trasfondos </h3>
-        <ul>
-            {% for pt in personaje.personajeTrasfondos %}
-                <li>{{ pt.trasfondo.nombre }}: {{ pt.nivel }}</li>
-            {% else %}
-                <li>No tiene trasfondos</li>
-            {% endfor %}
-        </ul>
+        {# ====================
+           --- VENTAJAS ---
+           ==================== #}
+        <section class="bg-white rounded-xl shadow-md p-6 mb-8">
+        
+            <h2 class="text-2xl font-semibold text-red-800 border-b pb-2 mb-6">
+                Ventajas
+            </h2>
 
-    {# Trasfondos fin #}
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {# ==========
+                DISCIPLINAS
+                ========== #}
+                <div class="bg-white rounded-xl shadow-md p-6 mb-8">
+                    <h2 class="text-2xl font-semibold text-red-800 border-b pb-2 mb-6">
+                        Disciplinas
+                    </h2>
 
-    {# Virtudes ini #}
+                    <div class="rounded-lg border border-slate-200 p-5 bg-slate-50">
+                        {% if personaje.personajeDisciplinas|length %}
+                            {% for pd in personaje.personajeDisciplinas %}
+                                <div class="flex justify-between items-center">
+                                    <span class="text-gray-700">{{ pd.disciplina.nombre }}</span>
 
-    {% set humanidad = 0 %}
-    {% set fuerzaVoluntad = 0 %}
-    <h3> Virtudes </h3>
-        {# 1. mostrar nombre y nivel de virtudes #}
-        <ul>
+                                    <div class="flex gap-1">
+                                        {% for i in 1..5 %}
+                                            {% if i <= pd.nivel %}
+                                                <span class="inline-block w-4 h-4 rounded-full bg-black"></span>
+                                            {% else %}
+                                                <span class="inline-block w-4 h-4 rounded-full border border-black"></span>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-gray-500">No tiene disciplinas</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                {# ==========
+                TRASFONDOS
+                ========== #}
+                <div class="bg-white rounded-xl shadow-md p-6 mb-8">
+                    <h2 class="text-2xl font-semibold text-red-800 border-b pb-2 mb-6">
+                        Trasfondos
+                    </h2>
+
+                    <div class="rounded-lg border border-slate-200 p-5 bg-slate-50">
+                        {% if personaje.personajeTrasfondos|length %}
+                            {% for pt in personaje.personajeTrasfondos %}
+                                <div class="flex justify-between items-center">
+                                    <span class="text-gray-700">{{ pt.trasfondo.nombre }}</span>
+
+                                    <div class="flex gap-1">
+                                        {% for i in 1..5 %}
+                                            {% if i <= pt.nivel %}
+                                                <span class="inline-block w-4 h-4 rounded-full bg-black"></span>
+                                            {% else %}
+                                                <span class="inline-block w-4 h-4 rounded-full border border-black"></span>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-gray-500">No tiene trasfondos</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                {# ==========
+                VIRTUDES
+                ========== #}
+                <div class="bg-white rounded-xl shadow-md p-6 mb-8">
+                    <h2 class="text-2xl font-semibold text-red-800 border-b pb-2 mb-6">
+                        Virtudes
+                    </h2>
+
+                    <div class="rounded-lg border border-slate-200 p-5 bg-slate-50">
+                        {% if personaje.personajeVirtudes|length %}
+                            {% for pv in personaje.personajeVirtudes %}
+                                <div class="flex justify-between items-center">
+                                    <span class="text-gray-700">{{ pv.virtud.nombre }}</span>
+
+                                    <div class="flex gap-1">
+                                        {% for i in 1..5 %}
+                                            {% if i <= pv.nivel %}
+                                                <span class="inline-block w-4 h-4 rounded-full bg-black"></span>
+                                            {% else %}
+                                                <span class="inline-block w-4 h-4 rounded-full border border-black"></span>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-gray-500">No tiene virtudes</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        {# ====================
+           --- BLOQUE VARIADO ---
+           ==================== #}
+        <section class="bg-white rounded-xl shadow-md p-6 mb-8">
+
+            {# ==========
+            HUMANIDAD
+            ========== #}
+            <div class="rounded-lg border border-slate-200 p-5 bg-slate-50">
+            {% set humanidad = 0 %}
             {% for pv in personaje.personajeVirtudes %}
-                <li>{{ pv.virtud.nombre }}: {{ pv.nivel }}</li>
-
-                {# 2. Si es conciencia o autocontrol, sumamos su nivel en humanidad #}
-                {% if pv.virtud.nombre == 'Autocontrol' or pv.virtud.nombre == 'Conciencia' %}
+                {% if pv.virtud.nombre in ['Autocontrol', 'Conciencia'] %}
                     {% set humanidad = humanidad + pv.nivel %}
                 {% endif %}
-                {# 3. Si es coraje o autocontrol, sumamos su nivel en fuerzaVoluntad #}
-                {% if pv.virtud.nombre == 'Coraje' or pv.virtud.nombre == 'Autocontrol' %}
-                    {% set fuerzaVoluntad = fuerzaVoluntad + pv.nivel %}
-                {% endif %}
-
-            {% else %}
-                <li>No tiene virtudes</li>
             {% endfor %}
-        </ul>
-        
-        <p>HUMANIDAD</p>
-        <p><strong>Humanidad:</strong> {{ humanidad }}</p>
-        <p><strong>Fuerza de voluntad:</strong> {{ fuerzaVoluntad }}</p>
 
-    {# Virtudes fin #}
 
-        <br>
-        <br>
-        <br>
-        <a href="{{ path('app_personaje_disciplina_new', {'id': personaje.id}) }}">
-        + Añadir disciplina
-        </a>
-        <br><br>
+                <h2 class="text-2xl font-semibold text-red-800 border-b pb-2 mb-6">
+                    Humanidad
+                </h2>
 
-        <a href="{{ path('app_personaje_index') }}">BACK TO LIST</a>
-        <br><br>
+                <div class="flex flex-col items-center justify-center gap-3">
+                    <div class="flex gap-1">
+                        {% for i in 1..10 %}
+                            {% if i <= humanidad %}
+                                <span class="inline-block w-4 h-4 rounded-full bg-black"></span>
+                            {% else %}
+                                <span class="inline-block w-4 h-4 rounded-full border border-black"></span>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
 
-    {% endblock %}
+                    <p class="text-4xl font-bold text-red-900">
+                        {{ humanidad }}
+                    </p>
+                </div>
+                <div class="rounded-xl p-1 bg-slate-50 mt-4">
+                    <p class="text-sm text-gray-500 mt-2 text-center">
+                        Autocontrol + Conciencia
+                    </p>
+                </div>
+            </div>
+
+        </section>
+
+        <section class="bg-white rounded-xl shadow-md p-6 mb-8">
+            <div class="rounded-lg border border-slate-200 p-5 bg-slate-50 mt-6">
+                {% set fuerzaVoluntad = 0 %}
+                {% for pv in personaje.personajeVirtudes %}
+                    {% if pv.virtud.nombre in ['Autocontrol', 'Coraje'] %}
+                        {% set fuerzaVoluntad = fuerzaVoluntad + pv.nivel %}
+                    {% endif %}
+                {% endfor %}
+
+                <h2 class="text-2xl font-semibold text-red-800 border-b pb-2 mb-6">
+                    Fuerza de Voluntad
+                </h2>
+
+                <div class="flex flex-col items-center justify-center gap-3">
+                    <div class="flex gap-1">
+                        {% for i in 1..10 %}
+                            {% if i <= fuerzaVoluntad %}
+                                <span class="inline-block w-4 h-4 rounded-full bg-black"></span>
+                            {% else %}
+                                <span class="inline-block w-4 h-4 rounded-full border border-black">
+                                </span>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+
+                    <p class="text-4xl font-bold text-red-900">
+                        {{ fuerzaVoluntad }}
+                    </p>
+                </div>
+
+                <div class="rounded-xl p-1 bg-slate-50 mt-4">
+                    <p class="text-sm text-gray-500 mt-2 text-center">
+                        Coraje
+                    </p>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+{% endblock %}

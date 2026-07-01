@@ -14,7 +14,6 @@
         {# ==============================
            CABECERA DEL PERSONAJE
            ============================== #}
-
         <section class="bg-white rounded-xl shadow-lg p-8 mb-8">
 
             <div class="flex justify-between items-start">
@@ -59,7 +58,6 @@
         {# ==========
            ATRIBUTOS
            ========== #}
-
         <section class="bg-white rounded-xl shadow-md p-6 mb-8">
 
             <h2 class="text-2xl font-semibold text-red-800 border-b pb-2 mb-6">
@@ -90,18 +88,17 @@
                                             {{ pa.atributo.nombre }}
                                         </span>
 
-
                                         <div class="flex gap-1">
 
                                             {% for i in 1..5 %}
 
                                                 {% if i <= pa.nivel %}
                                                     {# Puntos como circulitos #}
-                                                    <span class="inline-block w-4 h-4 rounded-full bg-black"></span>
+                                                    <span class="inline-block w-3 h-3 rounded-full bg-black"></span>
 
                                                 {% else %}
 
-                                                    <span class="inline-block w-4 h-4 rounded-full border border-black"></span>
+                                                    <span class="inline-block w-3 h-3 rounded-full border border-black"></span>
 
                                                 {% endif %}
 
@@ -121,14 +118,12 @@
                 {% endfor %}
 
             </div>
-
         </section>
 
 
         {# ==========
            HABILIDADES
            ========== #}
-
         <section class="bg-white rounded-xl shadow-md p-6 mb-8">
 
             <h2 class="text-2xl font-semibold text-red-800 border-b pb-2 mb-6">
@@ -165,11 +160,11 @@
 
                                                 {% if i <= ph.nivel %}
                                                     {# Puntos como circulitos #}
-                                                    <span class="inline-block w-4 h-4 rounded-full bg-black"></span>
+                                                    <span class="inline-block w-3 h-3 rounded-full bg-black"></span>
 
                                                 {% else %}
 
-                                                    <span class="inline-block w-4 h-4 rounded-full border border-black"></span>
+                                                    <span class="inline-block w-3 h-3 rounded-full border border-black"></span>
 
                                                 {% endif %}
 
@@ -189,133 +184,268 @@
                 {% endfor %}
 
             </div>
-
         </section>
 
 
-        {# ==========
-           DISCIPLINAS
-           ========== #}
-<section class="bg-white rounded-xl shadow-md p-6 mb-8">
-    <h2 class="text-2xl font-semibold text-red-800 border-b pb-2 mb-6">
-        Disciplinas
-    </h2>
+        {# ====================
+           --- VENTAJAS ---
+           ==================== #}
+        <section class="bg-white rounded-xl shadow-md p-6 mb-8">
+        
+            <h2 class="text-2xl font-semibold text-red-800 border-b pb-2 mb-6">
+                Ventajas
+            </h2>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {% if personaje.personajeDisciplinas|length %}
-            {% for pd in personaje.personajeDisciplinas %}
-                <div class="flex justify-between items-center">
-                    <span class="text-gray-700">{{ pd.disciplina.nombre }}</span>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {# ==========
+                DISCIPLINAS
+                ========== #}
+                <div class="bg-white rounded-xl shadow-md p-6 mb-8">
+                    <h2 class="text-2xl font-semibold text-red-800 border-b pb-2 mb-6">
+                        Disciplinas
+                    </h2>
 
-                    <div class="flex gap-1">
-                        {% for i in 1..5 %}
-                            {% if i <= pd.nivel %}
-                                <span class="inline-block w-4 h-4 rounded-full bg-black"></span>
-                            {% else %}
-                                <span class="inline-block w-4 h-4 rounded-full border border-black"></span>
-                            {% endif %}
-                        {% endfor %}
+                    <div class="rounded-lg border border-slate-200 p-5 bg-slate-50">
+                        {% if personaje.personajeDisciplinas|length %}
+                            {% for pd in personaje.personajeDisciplinas %}
+                                <div class="flex justify-between items-center">
+                                    <span class="text-gray-700">{{ pd.disciplina.nombre }}</span>
+
+                                    <div class="flex gap-1">
+                                        {% for i in 1..5 %}
+                                            {% if i <= pd.nivel %}
+                                                <span class="inline-block w-4 h-4 rounded-full bg-black"></span>
+                                            {% else %}
+                                                <span class="inline-block w-4 h-4 rounded-full border border-black"></span>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-gray-500">No tiene disciplinas</p>
+                        {% endif %}
                     </div>
                 </div>
-            {% endfor %}
-        {% else %}
-            <p class="text-gray-500">No tiene disciplinas</p>
-        {% endif %}
-    </div>
-</section>
 
+                {# ==========
+                TRASFONDOS
+                ========== #}
+                <div class="bg-white rounded-xl shadow-md p-6 mb-8">
+                    <h2 class="text-2xl font-semibold text-red-800 border-b pb-2 mb-6">
+                        Trasfondos
+                    </h2>
 
-        {# ==========
-           TRASFONDOS
-           ========== #}
-<section class="bg-white rounded-xl shadow-md p-6 mb-8">
-    <h2 class="text-2xl font-semibold text-red-800 border-b pb-2 mb-6">
-        Trasfondos
-    </h2>
+                    <div class="rounded-lg border border-slate-200 p-5 bg-slate-50">
+                        {% if personaje.personajeTrasfondos|length %}
+                            {% for pt in personaje.personajeTrasfondos %}
+                                <div class="flex justify-between items-center">
+                                    <span class="text-gray-700">{{ pt.trasfondo.nombre }}</span>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {% if personaje.personajeTrasfondos|length %}
-            {% for pt in personaje.personajeTrasfondos %}
-                <div class="flex justify-between items-center">
-                    <span class="text-gray-700">{{ pt.trasfondo.nombre }}</span>
-
-                    <div class="flex gap-1">
-                        {% for i in 1..5 %}
-                            {% if i <= pt.nivel %}
-                                <span class="inline-block w-4 h-4 rounded-full bg-black"></span>
-                            {% else %}
-                                <span class="inline-block w-4 h-4 rounded-full border border-black"></span>
-                            {% endif %}
-                        {% endfor %}
+                                    <div class="flex gap-1">
+                                        {% for i in 1..5 %}
+                                            {% if i <= pt.nivel %}
+                                                <span class="inline-block w-4 h-4 rounded-full bg-black"></span>
+                                            {% else %}
+                                                <span class="inline-block w-4 h-4 rounded-full border border-black"></span>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-gray-500">No tiene trasfondos</p>
+                        {% endif %}
                     </div>
                 </div>
-            {% endfor %}
-        {% else %}
-            <p class="text-gray-500">No tiene trasfondos</p>
-        {% endif %}
-    </div>
-</section>
 
-        {# ==========
-           VIRTUDES
-           ========== #}
-<section class="bg-white rounded-xl shadow-md p-6 mb-8">
-    <h2 class="text-2xl font-semibold text-red-800 border-b pb-2 mb-6">
-        Virtudes
-    </h2>
+                {# ==========
+                VIRTUDES
+                ========== #}
+                <div class="bg-white rounded-xl shadow-md p-6 mb-8">
+                    <h2 class="text-2xl font-semibold text-red-800 border-b pb-2 mb-6">
+                        Virtudes
+                    </h2>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {% if personaje.personajeVirtudes|length %}
-            {% for pv in personaje.personajeVirtudes %}
-                <div class="flex justify-between items-center">
-                    <span class="text-gray-700">{{ pv.virtud.nombre }}</span>
+                    <div class="rounded-lg border border-slate-200 p-5 bg-slate-50">
+                        {% if personaje.personajeVirtudes|length %}
+                            {% for pv in personaje.personajeVirtudes %}
+                                <div class="flex justify-between items-center">
+                                    <span class="text-gray-700">{{ pv.virtud.nombre }}</span>
 
-                    <div class="flex gap-1">
-                        {% for i in 1..5 %}
-                            {% if i <= pv.nivel %}
-                                <span class="inline-block w-4 h-4 rounded-full bg-black"></span>
-                            {% else %}
-                                <span class="inline-block w-4 h-4 rounded-full border border-black"></span>
-                            {% endif %}
-                        {% endfor %}
+                                    <div class="flex gap-1">
+                                        {% for i in 1..5 %}
+                                            {% if i <= pv.nivel %}
+                                                <span class="inline-block w-4 h-4 rounded-full bg-black"></span>
+                                            {% else %}
+                                                <span class="inline-block w-4 h-4 rounded-full border border-black"></span>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-gray-500">No tiene virtudes</p>
+                        {% endif %}
                     </div>
                 </div>
-            {% endfor %}
-        {% else %}
-            <p class="text-gray-500">No tiene virtudes</p>
-        {% endif %}
-    </div>
-</section>
+            </div>
+        </section>
 
-        {# ==========
-           HUMANIDAD
-           ========== #}
-{% set humanidad = 0 %}
-{% for pv in personaje.personajeVirtudes %}
-    {% if pv.virtud.nombre in ['Autocontrol', 'Conciencia'] %}
-        {% set humanidad = humanidad + pv.nivel %}
-    {% endif %}
-{% endfor %}
 
-<section class="bg-white rounded-xl shadow-md p-6 mb-8">
-    <h2 class="text-2xl font-semibold text-red-800 border-b pb-2 mb-6">
-        Humanidad
-    </h2>
+            {# ====================
+            --- BLOQUE VARIADO ---
+            ==================== #}
+        <section class="bg-white rounded-xl shadow-md p-6 mb-8">
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div class="rounded-xl border border-slate-200 p-6 bg-slate-50">
-            <p class="text-sm text-gray-500 uppercase tracking-wide mb-2">
-                Total de Humanidad
-            </p>
-            <p class="text-4xl font-bold text-red-900">
-                {{ humanidad }}
-            </p>
-            <p class="text-sm text-gray-500 mt-2">
-                Suma de Autocontrol y Conciencia
-            </p>
-        </div>
-    </div>
-</section>
+            <h2 class="text-2xl font-semibold text-red-800 border-b pb-2 mb-6">
+                Estado del personaje
+            </h2>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+                <!-- Columna izquierda -->
+                <div class="lg:col-span-1">
+                    <h2 class="text-2xl font-semibold text-red-800 border-b pb-2 mb-6">
+                        Meritos y defectos
+                    </h2>
+                </div>
+
+                <!-- Columna central (ocupa dos columnas) -->
+                <div class="lg:col-span-1">
+                    <section class="bg-white rounded-xl shadow-md p-6 mb-8">
+
+                        {# === Humanidad === #}
+                        <div class="rounded-lg border border-slate-200 p-5 bg-slate-50">
+                            {% set humanidad = 0 %}
+                            {% for pv in personaje.personajeVirtudes %}
+                                {% if pv.virtud.nombre in ['Autocontrol', 'Conciencia'] %}
+                                    {% set humanidad = humanidad + pv.nivel %}
+                                {% endif %}
+                            {% endfor %}
+
+                            <h2 class="text-2xl font-semibold text-red-800 border-b pb-2 mb-6">
+                                Humanidad
+                            </h2>
+
+                            <div class="flex flex-col items-center justify-center gap-3">
+                                <div class="flex gap-1">
+                                    {% for i in 1..10 %}
+                                        {% if i <= humanidad %}
+                                            <span class="inline-block w-4 h-4 rounded-full bg-black"></span>
+                                        {% else %}
+                                            <span class="inline-block w-4 h-4 rounded-full border border-black"></span>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+
+                                <p class="text-4xl font-bold text-red-900">
+                                    {{ humanidad }}
+                                </p>
+                            </div>
+                            <div class="rounded-xl p-1 bg-slate-50 mt-4">
+                                <p class="text-sm text-gray-500 mt-2 text-center">
+                                    Autocontrol + Conciencia
+                                </p>
+                            </div>
+                        </div>
+
+
+                        {# === Fuerza de voluntad === #}
+                        <div class="rounded-lg border border-slate-200 p-5 bg-slate-50 mt-6">
+                            {% set fuerzaVoluntad = 0 %}
+                            {% for pv in personaje.personajeVirtudes %}
+                                {% if pv.virtud.nombre in ['Autocontrol', 'Coraje'] %}
+                                    {% set fuerzaVoluntad = fuerzaVoluntad + pv.nivel %}
+                                {% endif %}
+                            {% endfor %}
+
+                            <h2 class="text-2xl font-semibold text-red-800 border-b pb-2 mb-6">
+                                Fuerza de Voluntad
+                            </h2>
+
+                            <div class="flex flex-col items-center justify-center gap-3">
+                                <div class="flex gap-1">
+                                    {% for i in 1..10 %}
+                                        {% if i <= fuerzaVoluntad %}
+                                            <span class="inline-block w-4 h-4 rounded-full bg-black"></span>
+                                        {% else %}
+                                            <span class="inline-block w-4 h-4 rounded-full border border-black">
+                                            </span>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+
+                                <p class="text-4xl font-bold text-red-900">
+                                    {{ fuerzaVoluntad }}
+                                </p>
+                            </div>
+
+                            <div class="rounded-xl p-1 bg-slate-50 mt-4">
+                                <p class="text-sm text-gray-500 mt-2 text-center">
+                                Autocontrol + Coraje 
+                                </p>
+                            </div>
+                        </div>
+
+
+                        {# === Reserva de sangre === #}
+                        <div class="rounded-lg border border-slate-200 p-5 bg-slate-50 mt-6">
+                            <h2 class="text-2xl font-semibold text-red-800 border-b pb-2 mb-6">
+                                Reserva de sangre
+                            </h2>
+                            <div class="flex gap-1 items-center justify-center">
+                                {% for i in 1..10 %}
+                                    {% if i <= 10 %}
+                                        <span class="inline-block w-4 h-4 border border-black"></span>
+                                    {% else %}
+                                        <span class="inline-block w-4 h-4 bg-black"></span>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                
+                <!-- Columna derecha -->
+                <div class="lg:col-span-1">
+                    <section class="bg-white rounded-xl shadow-md p-6 mb-8">
+                        {# === Salud === #}
+                        <div class="rounded-lg border border-slate-200 p-5 bg-slate-50 mt-6">
+                            <h2 class="text-2xl font-semibold text-red-800 border-b pb-2 mb-6">
+                                Salud
+                            </h2>
+                            <div class="flex gap-1 items-center justify-center">
+                                Seran 7 niveles
+                                Implementar despues
+                            </div>
+                        </div>
+
+                        {# === Debilidad de clan === #}
+                        <div class="rounded-lg border border-slate-200 p-5 bg-slate-50 mt-6">
+                            <h2 class="text-2xl font-semibold text-red-800 border-b pb-2 mb-6">
+                                Debilidad de clan
+                            </h2>
+                            <div class="flex gap-1 items-center justify-center">
+                                Se sacara de la base de datos
+                            </div>
+                        </div>
+
+                        {# === Experiencia === #}
+                        <div class="rounded-lg border border-slate-200 p-5 bg-slate-50 mt-6">
+                            <h2 class="text-2xl font-semibold text-red-800 border-b pb-2 mb-6">
+                                Experiencia
+                            </h2>
+                            <div class="flex gap-1 items-center justify-center">
+                                Se sacara de la base de datos
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </section>
+
+
     </div>
 </div>
 
