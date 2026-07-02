@@ -60,7 +60,7 @@
            ========== #}
         <section class="bg-white rounded-xl shadow-md p-6 mb-8">
 
-            <h2 class="text-2xl font-semibold text-red-800 border-b pb-2 mb-6">
+            <h2 class="text-center text-2xl font-semibold text-red-800 border-b pb-2 mb-6">
                 Atributos
             </h2>
 
@@ -126,7 +126,7 @@
            ========== #}
         <section class="bg-white rounded-xl shadow-md p-6 mb-8">
 
-            <h2 class="text-2xl font-semibold text-red-800 border-b pb-2 mb-6">
+            <h2 class="text-center text-2xl font-semibold text-red-800 border-b pb-2 mb-6">
                 Habilidades
             </h2>
 
@@ -192,7 +192,7 @@
            ==================== #}
         <section class="bg-white rounded-xl shadow-md p-6 mb-8">
         
-            <h2 class="text-2xl font-semibold text-red-800 border-b pb-2 mb-6">
+            <h2 class="text-center text-2xl font-semibold text-red-800 border-b pb-2 mb-6">
                 Ventajas
             </h2>
 
@@ -201,9 +201,9 @@
                 DISCIPLINAS
                 ========== #}
                 <div class="bg-white rounded-xl shadow-md p-6 mb-8">
-                    <h2 class="text-2xl font-semibold text-red-800 border-b pb-2 mb-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">
                         Disciplinas
-                    </h2>
+                    </h3>
 
                     <div class="rounded-lg border border-slate-200 p-5 bg-slate-50">
                         {% if personaje.personajeDisciplinas|length %}
@@ -232,9 +232,9 @@
                 TRASFONDOS
                 ========== #}
                 <div class="bg-white rounded-xl shadow-md p-6 mb-8">
-                    <h2 class="text-2xl font-semibold text-red-800 border-b pb-2 mb-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">
                         Trasfondos
-                    </h2>
+                    </h3>
 
                     <div class="rounded-lg border border-slate-200 p-5 bg-slate-50">
                         {% if personaje.personajeTrasfondos|length %}
@@ -263,9 +263,9 @@
                 VIRTUDES
                 ========== #}
                 <div class="bg-white rounded-xl shadow-md p-6 mb-8">
-                    <h2 class="text-2xl font-semibold text-red-800 border-b pb-2 mb-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">
                         Virtudes
-                    </h2>
+                    </h3>
 
                     <div class="rounded-lg border border-slate-200 p-5 bg-slate-50">
                         {% if personaje.personajeVirtudes|length %}
@@ -293,12 +293,12 @@
         </section>
 
 
-            {# ====================
-            --- BLOQUE VARIADO ---
+        {# ====================
+            --- ESTADO DEL PERSONAJE ---
             ==================== #}
         <section class="bg-white rounded-xl shadow-md p-6 mb-8">
 
-            <h2 class="text-2xl font-semibold text-red-800 border-b pb-2 mb-6">
+            <h2 class="text-center text-2xl font-semibold text-red-800 border-b pb-2 mb-6">
                 Estado del personaje
             </h2>
 
@@ -306,9 +306,16 @@
 
                 <!-- Columna izquierda -->
                 <div class="lg:col-span-1">
-                    <h2 class="text-2xl font-semibold text-red-800 border-b pb-2 mb-6">
-                        Meritos y defectos
-                    </h2>
+                    <section class="bg-white rounded-xl shadow-md p-6 mb-8">
+                        <div class="rounded-lg border border-slate-200 p-5 bg-slate-50 mt-6">
+                            <h3 class="text-xl font-bold text-gray-800 mb-4">
+                            Meritos y defectos
+                            </h3>
+                            <p>
+                                Se añadira mas tarde
+                            </p>
+                        </div>
+                    </section>
                 </div>
 
                 <!-- Columna central (ocupa dos columnas) -->
@@ -316,7 +323,7 @@
                     <section class="bg-white rounded-xl shadow-md p-6 mb-8">
 
                         {# === Humanidad === #}
-                        <div class="rounded-lg border border-slate-200 p-5 bg-slate-50">
+                        <div class="rounded-lg border border-slate-200 p-5 bg-slate-50 mt-6">
                             {% set humanidad = 0 %}
                             {% for pv in personaje.personajeVirtudes %}
                                 {% if pv.virtud.nombre in ['Autocontrol', 'Conciencia'] %}
@@ -350,7 +357,6 @@
                             </div>
                         </div>
 
-
                         {# === Fuerza de voluntad === #}
                         <div class="rounded-lg border border-slate-200 p-5 bg-slate-50 mt-6">
                             {% set fuerzaVoluntad = 0 %}
@@ -370,8 +376,16 @@
                                         {% if i <= fuerzaVoluntad %}
                                             <span class="inline-block w-4 h-4 rounded-full bg-black"></span>
                                         {% else %}
-                                            <span class="inline-block w-4 h-4 rounded-full border border-black">
-                                            </span>
+                                            <span class="inline-block w-4 h-4 rounded-full border border-black"></span>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                                <div class="flex gap-1">
+                                    {% for i in 1..10 %}
+                                        {% if i <= fuerzaVoluntad %}
+                                            <span class="inline-block w-4 h-4 border border-black"></span>
+                                        {% else %}
+                                            <span class="inline-block w-4 h-4 border border-black"></span>
                                         {% endif %}
                                     {% endfor %}
                                 </div>
@@ -416,8 +430,36 @@
                                 Salud
                             </h2>
                             <div class="flex gap-1 items-center justify-center">
-                                Seran 7 niveles
-                                Implementar despues
+                                {% set nivelesSalud = [
+                                    ['Magullado', '0'],
+                                    ['Lastimado', '-1'],
+                                    ['Lesionado', '-1'],
+                                    ['Herido', '-2'],
+                                    ['Malherido', '-2'],
+                                    ['Tullido', '-5'],
+                                    ['Incapacitado', '0']
+                                ] %}
+
+                                <div class="space-y-2">
+                                    {% for nivel in nivelesSalud %}
+
+                                    <div class="flex items-center justify-between py-1">
+
+                                        <span class="w-40">
+                                            {{ nivel[0] }}
+                                        </span>
+
+                                        <span class="w-10 text-center font-semibold">
+                                            {{ nivel[1] }}
+                                        </span>
+
+                                        <span class="inline-block w-5 h-5 border-2 border-black"></span>
+
+                                    </div>
+
+                                    {% endfor %}
+
+                                </div>
                             </div>
                         </div>
 
@@ -437,14 +479,13 @@
                                 Experiencia
                             </h2>
                             <div class="flex gap-1 items-center justify-center">
-                                Se sacara de la base de datos
+                               {{ personaje.experiencia }}
                             </div>
                         </div>
                     </section>
                 </div>
             </div>
         </section>
-
 
     </div>
 </div>
