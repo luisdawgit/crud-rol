@@ -21,6 +21,22 @@
         </div>
 
         <div>
+            {{ form_label(form.naturaleza, null, {'label_attr': {'class': 'block text-zinc-300 mb-2'}}) }}
+            {{ form_widget(form.naturaleza, {'attr': {'class': 'w-full rounded-lg bg-zinc-800 border border-zinc-600 text-white p-3'}}) }}
+            {{ form_errors(form.naturaleza) }}
+        </div>
+        <div>
+            {{ form_label(form.conducta, null, {'label_attr': {'class': 'block text-zinc-300 mb-2'}}) }}
+            {{ form_widget(form.conducta, {'attr': {'class': 'w-full rounded-lg bg-zinc-800 border border-zinc-600 text-white p-3'}}) }}
+            {{ form_errors(form.conducta) }}
+        </div>
+        <div>
+            {{ form_label(form.concepto, null, {'label_attr': {'class': 'block text-zinc-300 mb-2'}}) }}
+            {{ form_widget(form.concepto, {'attr': {'class': 'w-full rounded-lg bg-zinc-800 border border-zinc-600 text-white p-3'}}) }}
+            {{ form_errors(form.concepto) }}
+        </div>
+
+        <div>
             {{ form_label(form.clan, null, {'label_attr': {'class': 'block text-zinc-300 mb-2'}}) }}
             {{ form_widget(form.clan, {'attr': {'class': 'w-full rounded-lg bg-zinc-800 border border-zinc-600 text-white p-3'}}) }}
             {{ form_errors(form.clan) }}

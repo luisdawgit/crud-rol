@@ -59,6 +59,15 @@ private Collection $personajeTrasfondos;
 #[ORM\OneToMany(mappedBy: 'personaje', targetEntity: PersonajeVirtud::class, orphanRemoval: true)]
 private Collection $personajeVirtudes;
 
+#[ORM\Column(length: 50)]
+private ?string $naturaleza = null;
+
+#[ORM\Column(length: 50)]
+private ?string $conducta = null;
+
+#[ORM\Column(length: 50)]
+private ?string $concepto = null;
+
 
 
 
@@ -276,6 +285,42 @@ private Collection $personajeVirtudes;
                 $personajeVirtude->setPersonaje(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getNaturaleza(): ?string
+    {
+        return $this->naturaleza;
+    }
+
+    public function setNaturaleza(string $naturaleza): static
+    {
+        $this->naturaleza = $naturaleza;
+
+        return $this;
+    }
+
+    public function getConducta(): ?string
+    {
+        return $this->conducta;
+    }
+
+    public function setConducta(string $conducta): static
+    {
+        $this->conducta = $conducta;
+
+        return $this;
+    }
+
+    public function getConcepto(): ?string
+    {
+        return $this->concepto;
+    }
+
+    public function setConcepto(string $concepto): static
+    {
+        $this->concepto = $concepto;
 
         return $this;
     }

@@ -14,6 +14,9 @@ class PersonajeType extends AbstractType
         $builder
             ->add('experiencia')
             ->add('nombre')
+            ->add('naturaleza')
+            ->add('conducta')
+            ->add('concepto')
             ->add('clan')
         ;
     }
