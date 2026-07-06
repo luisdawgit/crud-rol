@@ -66,7 +66,6 @@ function initPointAllocator(config) {
       }
     });
   });
-  actualizarContadores();
 
   function actualizarCirculos() {
     document.querySelectorAll(".point-row").forEach((row) => {
@@ -90,5 +89,18 @@ function initPointAllocator(config) {
     });
   }
 
+  document.querySelectorAll(".point-dot").forEach((dot) => {
+    dot.addEventListener("click", () => {
+      const row = dot.closest(".point-row");
+      const input = row.querySelector(".point-input");
+
+      input.value = dot.dataset.value;
+
+      actualizarContadores();
+      actualizarCirculos();
+    });
+  });
+
+  actualizarContadores();
   actualizarCirculos();
 }
