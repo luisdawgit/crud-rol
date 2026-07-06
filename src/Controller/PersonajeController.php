@@ -39,6 +39,10 @@ use App\Service\PointAllocationService;
 #[Route('/personaje')]
 class PersonajeController extends AbstractController
 {
+
+    private const ERROR_DISTRIBUCION = 'La distribución de puntos no es válida. Siga las instrucciones correctamente.';
+
+
     #[Route('/', name: 'app_personaje_index', methods: ['GET'])]
     public function index(PersonajeRepository $personajeRepository): Response
     {
@@ -52,6 +56,7 @@ class PersonajeController extends AbstractController
     #[Route('/new', name: 'app_personaje_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
+
         $personaje = new Personaje();
         $form = $this->createForm(PersonajeType::class, $personaje);
         $form->handleRequest($request);
@@ -68,7 +73,9 @@ class PersonajeController extends AbstractController
             ]);
 
             if ($existente) {
-                $this->addFlash('error', 'Ya tienes un personaje con ese nombre. Por favor, elige otro nombre.');
+                $this->addFlash('error', 
+                'Ya tienes un personaje con ese nombre. Por favor, elige otro nombre.');
+                
                 return $this->redirectToRoute('app_personaje_new');//--
             }
             //Comprobar nombre fin
@@ -117,6 +124,8 @@ class PersonajeController extends AbstractController
         $atributos = $atributoRepository->findAll();
         $atributosAgrupados = $this->agruparPorCategoria($atributos);
 
+        $distribucion = [3,5,7];
+        $regla = 'Reparte ' . implode(' / ', $distribucion) . ' puntos entre las categorías Físicos, Sociales y Mentales, dependiendo de cuál quieras que sea la categoría principal de tu personaje y cuales las secundarias y terciarias.';
 
         // procesar formulario
         if ($request->isMethod('POST')) {
@@ -134,7 +143,8 @@ class PersonajeController extends AbstractController
                     $atributo->getNombre() === 'Apariencia' &&
                     (int)$nivel > 1
                 ) {
-                    $this->addFlash('error', 'Los Nosferatu no pueden subir Apariencia');
+                    $this->addFlash('error', 
+                    'Los Nosferatu no pueden subir Apariencia');
                 
                     return $this->redirectToRoute('app_personaje_atributos', [
                         'id' => $personaje->getId()
@@ -142,7 +152,7 @@ class PersonajeController extends AbstractController
                 }
                 //Validar que los Nosferatu no puedan subir Apariencia mas de 1 fin
             }
-
+            
             if (!$pointAllocation->validarDistribucion(
                 $data,
                 function ($atributoId) use ($atributoRepository) {
@@ -151,14 +161,11 @@ class PersonajeController extends AbstractController
                         ->find($atributoId)
                         ->getCategoria();
                 },
-                [3,5,7],
+                $distribucion,
                 1
             )) {
 
-                $this->addFlash(
-                    'error',
-                    'Debes repartir los puntos como 7 / 5 / 3'
-                );
+                $this->addFlash('error', self::ERROR_DISTRIBUCION);
 
                 return $this->redirectToRoute(
                     'app_personaje_atributos',
@@ -202,7 +209,8 @@ class PersonajeController extends AbstractController
             'rasgosAgrupados' => $atributosAgrupados,
             'inputName' => 'atributos',
             'minimo' => 1,
-            'maximo' => 5
+            'maximo' => 5,
+            'regla' => $regla
         ]);
     }
     //atributos fin
@@ -221,12 +229,13 @@ class PersonajeController extends AbstractController
     {
         if ($personaje->getUsuario() !== $this->getUser()) {
             throw $this->createAccessDeniedException();
-        }
-
+            }
+            
         $habilidades = $habilidadRepository->findAll(); // luego lo cambiamos a HabilidadRepository
-
         $habilidadesAgrupadas = $this->agruparPorCategoria($habilidades);
 
+        $distribucion = [5, 9, 13];
+        $regla = 'Reparte ' . implode(' / ', $distribucion) . ' puntos entre las categorías Talentos, Tecnicas y Conocimientos, dependiendo de cuál quieras que sea la categoría principal de tu personaje y cuales las secundarias y terciarias.';
 
         if ($request->isMethod('POST')) {
 
@@ -239,16 +248,12 @@ class PersonajeController extends AbstractController
                     return $habilidadRepository
                         ->find($habilidadId)
                         ->getCategoria();
-
                 },
-                [5, 9, 13],
+                $distribucion,
                 0
             )) {
 
-                $this->addFlash(
-                    'error',
-                    'Debes repartir las habilidades como 13 / 9 / 5'
-                );
+                $this->addFlash('error', self::ERROR_DISTRIBUCION);
 
                 return $this->redirectToRoute(
                     'app_personaje_habilidades',
@@ -291,7 +296,8 @@ class PersonajeController extends AbstractController
             'rasgosAgrupados' => $habilidadesAgrupadas,
             'inputName' => 'habilidades',
             'minimo' => 0,
-            'maximo' => 3
+            'maximo' => 3,
+            'regla' => $regla
         ]);
     }
     //habilidad fin
@@ -314,20 +320,24 @@ class PersonajeController extends AbstractController
         $trasfondos = $trasfondoRepository->findAll();
         $trasfondosAgrupados = ['Trasfondos' => $trasfondos];
 
+        $distribucion = 5;
+        $regla = 'Reparte un total de ' . $distribucion . ' puntos en trasfondos';
+
         if ($request->isMethod('POST')) {
 
             $data = $request->request->all('trasfondos');
 
-//Validacion puntos gratuitos transfondos ini
+            //Validacion puntos gratuitos transfondos ini
             $totalPuntos = array_sum($data);
-            if ($totalPuntos !== 5) {
-                $this->addFlash('error', 'Debes repartir un total de 5 puntos en trasfondos');
+            
+            if ($totalPuntos !== $distribucion) {
+                $this->addFlash('error', self::ERROR_DISTRIBUCION);
                 
                 return $this->redirectToRoute('app_personaje_trasfondos', [
                     'id' => $personaje->getId()
                 ]);
             }
-//Validacion puntos gratuitos transfondos fin
+            //Validacion puntos gratuitos transfondos fin
 
             foreach ($data as $trasfondoId => $nivel) {
                 $trasfondo = $trasfondoRepository->find($trasfondoId);
@@ -346,7 +356,6 @@ class PersonajeController extends AbstractController
                 //Evitar duplicados y actualizar si ya existe un registro fin
 
                 $pt->setNivel((int)$nivel);
-
                 $entityManager->persist($pt);
             }
 
@@ -363,7 +372,8 @@ class PersonajeController extends AbstractController
             'rasgosAgrupados' => $trasfondosAgrupados,
             'inputName' => 'trasfondos',
             'minimo' => 0,
-            'maximo' => 3
+            'maximo' => 3,
+            'regla' => $regla
         ]);
     }
     //Trasfondos fin
@@ -383,23 +393,23 @@ class PersonajeController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
+        $distribucion = 7;
+        $regla = 'Reparte un total de ' . $distribucion . ' puntos en virtudes';
+
         $virtudes = $virtudRepository->findAll();
         $virtudesAgrupadas = ['Virtudes' => $virtudes];
 
         if ($request->isMethod('POST')) {
             $data = $request->request->all('virtudes');//disciplinas
-
             $totalPuntos = array_sum($data);
-            //ultimo cambio ini
+            
             if (!$pointAllocation->validarTotal(
                 $data,
-                7,
+                $distribucion,
                 1
             )) {
 
-                $this->addFlash(
-                    'error',
-                    'Debes repartir exactamente 7 puntos en virtudes'
+                $this->addFlash('error', self::ERROR_DISTRIBUCION
                 );
 
                 return $this->redirectToRoute(
@@ -407,7 +417,7 @@ class PersonajeController extends AbstractController
                     ['id' => $personaje->getId()]
                 );
             }
-            //ultimo cambio fin
+            
 
             foreach ($data as $virtudId => $nivel) {
                 $virtud = $virtudRepository->find($virtudId);
@@ -443,7 +453,8 @@ class PersonajeController extends AbstractController
             'rasgosAgrupados' => $virtudesAgrupadas,
             'inputName' => 'virtudes',
             'minimo' => 1,
-            'maximo' => 5
+            'maximo' => 5,
+            'regla' => $regla
         ]);
 
         $humanidad = $consciencia + $autocontrol;
@@ -465,11 +476,14 @@ class PersonajeController extends AbstractController
         PointAllocationService $pointAllocation
     ): Response
     {
+        $disciplinas = [];        
+        $distribucion = 3;
+        $regla = 'Reparte ' . $distribucion . ' puntos como tu quieras entre tus disciplinas de clan.'; 
+
         if ($personaje->getUsuario() !== $this->getUser()) {
             throw $this->createAccessDeniedException();
         }
 
-        $disciplinas = [];
 
         foreach (
             $personaje->getClan()->getClanDisciplinas()
@@ -481,7 +495,7 @@ class PersonajeController extends AbstractController
         $disciplinasAgrupadas = [
             'Disciplinas' => $disciplinas
         ];
-        
+
         if ($request->isMethod('POST')) {
             $data = $request->request->all('disciplinas');
 
@@ -489,14 +503,11 @@ class PersonajeController extends AbstractController
             //ultimo cambio ini
             if (!$pointAllocation->validarTotal(
                 $data,
-                3,
+                $distribucion,
                 0
             )) {
 
-                $this->addFlash(
-                    'error',
-                    'Debes repartir exactamente 3 puntos en disciplinas'
-                );
+                $this->addFlash('error', self::ERROR_DISTRIBUCION);
 
                 return $this->redirectToRoute(
                     'app_personaje_disciplinas',
@@ -540,6 +551,7 @@ class PersonajeController extends AbstractController
             'inputName' => 'disciplinas',
             'minimo' => 0,
             'maximo' => 3,
+            'regla' => $regla
         ]);
 
         $humanidad = $consciencia + $autocontrol;
@@ -582,7 +594,7 @@ class PersonajeController extends AbstractController
 
         return $this->renderForm('personaje/edit.html.twig', [
             'personaje' => $personaje,
-            'form' => $form,
+            'form' => $form
         ]);
     }
 
