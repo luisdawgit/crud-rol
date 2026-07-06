@@ -1,3 +1,9 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+<div class="max-w-4xl mx-auto bg-zinc-900 rounded-xl shadow-2xl p-8 border border-zinc-700">
+
     {% for message in app.flashes('error') %}
         <div style="color:red;">
             {{ message }}
@@ -7,67 +13,98 @@
     {# Aviso puntos repartidos mal #}
     <p id="mensaje_error" style="color:red;">
     </p>
+
     <form method="post"> 
 
-    <p>
-        Distribución actual: 
-        <span id="distribucion"></span>
-    </p>
+        <div class="mb-8 text-lg text-zinc-300">
+            Distribución actual:
+            <span
+                id="distribucion"
+                class="font-bold text-red-300">
+            </span>
+        </div>
 
-    <h1>{{ titulo }}</h1>
+        <h1 class="text-4xl font-bold text-red-200 mb-2">
+            {{ titulo }}
+        </h1>
 
-    {% for categoria, lista in rasgosAgrupados %}
+        <p class="text-zinc-400 mb-8">
+            Reparte los puntos de tu personaje.
+        </p>
 
-        <h2>
-            {{ categoria }}
-            (<span id="{{ categoria|lower }}_actual">0</span>)
+        {% for categoria, lista in rasgosAgrupados %}
 
-        </h2>
+            <h2 class="text-2xl font-semibold text-red-300 mt-8 mb-4 border-b border-zinc-700 pb-2">
+                {{ categoria }}
+                (<span id="{{ categoria|lower }}_actual">0</span>)
+            </h2>
 
-        {% for item in lista %}
 
-            <div class="point-row">
+            {% for item in lista %}
 
-                {{ item.nombre }}
+            <div class="point-row flex items-center justify-between py-3 border-b border-zinc-800">
 
-                <div>
+                <span class="text-zinc-200 font-medium">
+                    {{ item.nombre }}
+                </span>
 
-                    <button type="button" class="minus-btn">-</button>
+                <div class="flex items-center gap-3">
+
+                    <button
+                        type="button"
+                        class="minus-btn w-8 h-8 rounded bg-zinc-700 hover:bg-red-800 transition">
+                        −
+                    </button>
 
                     <input
                         type="number"
-                        class="point-input"
+                        class="point-input w-12 text-center rounded bg-zinc-800 border border-zinc-600 text-white"
                         name="{{ inputName }}[{{ item.id }}]"
-                        value="{{minimo}}"
+                        value="{{ minimo }}"
                         readonly
                         data-categoria="{{ categoria }}"
                     >
 
-                    <button type="button" class="plus-btn">+</button>
+                    <button
+                        type="button"
+                        class="plus-btn w-8 h-8 rounded bg-zinc-700 hover:bg-red-800 transition">
+                        +
+                    </button>
 
                 </div>
 
             </div>
 
+            {% endfor %}
+
         {% endfor %}
 
-    {% endfor %}
-
-    <script src="{{ asset('js/point_allocator.js') }}"></script>
+        <script src="{{ asset('js/point_allocator.js') }}"></script>
 
 
-    <script>
+        <script>
 
-        initPointAllocator({
-            minimo: {{ minimo }},
-            base: {{ minimo }},
-            maximo: {{ maximo }}
-        });
+            initPointAllocator({
+                minimo: {{ minimo }},
+                base: {{ minimo }},
+                maximo: {{ maximo }}
+            });
 
-    </script>
+        </script>
 
-    <br>
-    <br>
-    <button type="submit">Guardar rasgos</button>
+        <br>
+        <br>
+        <div class="mt-10 text-right">
+            <button
+                class="bg-red-800 hover:bg-red-700 px-8 py-3 rounded-lg font-semibold transition">
+                Continuar →
+            </button>
+        </div>
 
     </form>
+</div>
+
+{% endblock %}
+
+
+
