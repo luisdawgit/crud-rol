@@ -39,15 +39,15 @@ use App\Service\PointAllocationService;
 #[Route('/personaje')]
 class PersonajeController extends AbstractController
 {
-#[Route('/', name: 'app_personaje_index', methods: ['GET'])]
-public function index(PersonajeRepository $personajeRepository): Response
-{
-    return $this->render('personaje/index.html.twig', [
-        'personajes' => $personajeRepository->findBy([
-            'usuario' => $this->getUser()
-        ]),
-    ]);
-}
+    #[Route('/', name: 'app_personaje_index', methods: ['GET'])]
+    public function index(PersonajeRepository $personajeRepository): Response
+    {
+        return $this->render('personaje/index.html.twig', [
+            'personajes' => $personajeRepository->findBy([
+                'usuario' => $this->getUser()
+            ]),
+        ]);
+    }
 
     #[Route('/new', name: 'app_personaje_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
@@ -99,12 +99,12 @@ public function index(PersonajeRepository $personajeRepository): Response
     }
 
 
-    // atributos init
+    //atributos init
     #[Route('/{id}/atributos', name: 'app_personaje_atributos', methods: ['GET','POST'])]
     public function atributos(
         Personaje $personaje,
         AtributoRepository $atributoRepository,
-        PersonajeAtributoRepository $personajeAtributoRepository,//
+        PersonajeAtributoRepository $personajeAtributoRepository,
         Request $request,
         EntityManagerInterface $entityManager,
         PointAllocationService $pointAllocation
@@ -205,8 +205,9 @@ public function index(PersonajeRepository $personajeRepository): Response
             'maximo' => 5
         ]);
     }
-    // atributos fin
+    //atributos fin
 
+    
     //habilidad init
     #[Route('/{id}/habilidades', name: 'app_personaje_habilidades', methods: ['GET','POST'])]
     public function habilidades(
