@@ -2,19 +2,7 @@
 
 {% block body %}
 
-<div class="max-w-4xl mx-auto bg-zinc-900 rounded-xl shadow-2xl p-8 border border-zinc-700">
-
-    {% for message in app.flashes('error') %}
-        <div style="color:red;">
-            {{ message }}
-        </div>
-    {% endfor %}
-
-    {# Aviso puntos repartidos mal #}
-    <p id="mensaje_error" style="color:red;">
-    </p>
-
-    <form method="post"> 
+<div class="max-w-4xl mx-auto bg-zinc-500 rounded-xl shadow-2xl p-8 border border-zinc-700">
 
         <div class="mb-8 text-lg text-zinc-300">
             Distribución actual:
@@ -22,7 +10,21 @@
                 id="distribucion"
                 class="font-bold text-red-300">
             </span>
+            {# Aviso puntos repartidos mal #}
+
+            <p id="mensaje_error" style="color:red;">
+            </p>
+
+            {% for message in app.flashes('error') %}
+                <div style="color:red;">
+                    {{ message }}
+                </div>
+            {% endfor %}
         </div>
+
+
+    <form method="post"> 
+
 
         <h1 class="text-4xl font-bold text-red-200 mb-2">
             {{ titulo }}
@@ -48,28 +50,33 @@
                     {{ item.nombre }}
                 </span>
 
-                <div class="flex items-center gap-3">
+                <div class="flex items-center gap-4">
 
-                    <button
-                        type="button"
-                        class="minus-btn w-8 h-8 rounded bg-zinc-700 hover:bg-red-800 transition">
-                        −
-                    </button>
+                    <div class="flex gap-1 point-display">
+                        {% for i in 1..5 %}
+                            <span
+                                class="w-4 h-4 rounded-full border border-zinc-400 point-dot"
+                                data-value="{{ i }}">
+                            </span>
+                        {% endfor %}
+                    </div>
 
-                    <input
-                        type="number"
-                        class="point-input w-12 text-center rounded bg-zinc-800 border border-zinc-600 text-white"
-                        name="{{ inputName }}[{{ item.id }}]"
-                        value="{{ minimo }}"
-                        readonly
-                        data-categoria="{{ categoria }}"
-                    >
+                    <div class="flex items-center gap-2">
 
-                    <button
-                        type="button"
-                        class="plus-btn w-8 h-8 rounded bg-zinc-700 hover:bg-red-800 transition">
-                        +
-                    </button>
+                        <button type="button" class="minus-btn w-12 h-12 text-2xl font-bold bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full flex items-center justify-center border border-gray-300 transition-colors shadow-sm">−</button>
+
+                        <input
+                            value="{{ minimo }}"
+                            class="point-input"
+                            name="{{ inputName }}[{{ item.id }}]"
+                            data-categoria="{{ categoria }}"
+                            readonly
+                        >
+
+                        <button type="button" class="plus-btn w-12 h-12 text-2xl font-bold bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full flex items-center justify-center border border-gray-300 transition-colors shadow-sm">+</button>
+                        
+
+                    </div>
 
                 </div>
 

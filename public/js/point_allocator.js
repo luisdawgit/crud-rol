@@ -46,6 +46,7 @@ function initPointAllocator(config) {
 
       if (value < config.maximo) {
         input.value = value + 1;
+        actualizarCirculos();
         actualizarContadores();
       }
     });
@@ -60,9 +61,34 @@ function initPointAllocator(config) {
 
       if (value > config.minimo) {
         input.value = value - 1;
+        actualizarCirculos();
         actualizarContadores();
       }
     });
   });
   actualizarContadores();
+
+  function actualizarCirculos() {
+    document.querySelectorAll(".point-row").forEach((row) => {
+      const input = row.querySelector(".point-input");
+
+      if (!input) return;
+
+      const valor = parseInt(input.value);
+
+      row.querySelectorAll(".point-dot").forEach((dot) => {
+        const nivel = parseInt(dot.dataset.value);
+
+        if (nivel <= valor) {
+          dot.classList.add("bg-red-700");
+          dot.classList.remove("bg-transparent");
+        } else {
+          dot.classList.remove("bg-red-700");
+          dot.classList.add("bg-transparent");
+        }
+      });
+    });
+  }
+
+  actualizarCirculos();
 }
