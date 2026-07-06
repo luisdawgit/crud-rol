@@ -10,6 +10,17 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: ClanRepository::class)]
 class Clan
 {
+
+    #[ORM\Column(type: 'text')]
+    private ?string $descripcion = null;
+
+    #[ORM\Column(type: 'text')]
+    private ?string $debilidad = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $imagen = null;
+
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

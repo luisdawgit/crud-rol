@@ -10,6 +10,13 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: DisciplinaRepository::class)]
 class Disciplina
 {
+
+    #[ORM\Column(type: 'text')]
+    private ?string $descripcion = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $imagen = null;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
