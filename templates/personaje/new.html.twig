@@ -3,9 +3,11 @@
 {% block title %}New Personaje{% endblock %}
 
 {% block body %}
-    <h1>Crear nuevo personaje</h1>
 
     {{ include('personaje/_form.html.twig') }}
 
-    <a href="{{ path('app_personaje_index') }}">Back to list</a>
+   {#
+   <a href="{{ path('app_personaje_index') }}">Back to list</a>
+   #}
+
 {% endblock %}

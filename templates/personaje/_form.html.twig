@@ -1,5 +1,48 @@
-
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+
+<div class="max-w-2xl mx-auto bg-zinc-900 border border-zinc-700 rounded-xl shadow-2xl p-8">
+
+    <h1 class="text-4xl font-bold text-red-200 mb-2">
+        Crear nuevo personaje
+    </h1>
+
+    <p class="text-zinc-400 mb-8">
+        Todo vampiro tiene una historia.
+        Empecemos por los aspectos básicos de tu personaje.
+        Elije tu clan, naturaleza, conducta, concepto y si cuenta con algo de experiencia.
+    </p>
+
+    <div class="space-y-6">
+
+        <div>
+            {{ form_label(form.nombre, null, {'label_attr': {'class': 'block text-zinc-300 mb-2'}}) }}
+            {{ form_widget(form.nombre, {'attr': {'class': 'w-full rounded-lg bg-zinc-800 border border-zinc-600 text-white p-3'}}) }}
+            {{ form_errors(form.nombre) }}
+        </div>
+
+        <div>
+            {{ form_label(form.clan, null, {'label_attr': {'class': 'block text-zinc-300 mb-2'}}) }}
+            {{ form_widget(form.clan, {'attr': {'class': 'w-full rounded-lg bg-zinc-800 border border-zinc-600 text-white p-3'}}) }}
+            {{ form_errors(form.clan) }}
+        </div>
+
+        <div>
+            {{ form_label(form.experiencia, null, {'label_attr': {'class': 'block text-zinc-300 mb-2'}}) }}
+            {{ form_widget(form.experiencia, {'attr': {'class': 'w-full rounded-lg bg-zinc-800 border border-zinc-600 text-white p-3'}}) }}
+            {{ form_errors(form.experiencia) }}
+        </div>
+
+    </div>
+
+    <div class="mt-8 text-right">
+        <button class="bg-red-800 hover:bg-red-700 text-white px-6 py-3 rounded-lg transition">
+            <a href="{{ path('app_personaje_index') }}">← Back to list</a>
+        </button>
+        <button class="bg-red-800 hover:bg-red-700 text-white px-6 py-3 rounded-lg transition">
+            Comenzar creación → 
+        </button>
+    </div>
+
+</div>
+
 {{ form_end(form) }}
