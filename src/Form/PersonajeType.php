@@ -32,9 +32,10 @@ class PersonajeType extends AbstractType
             ->add('clan', EntityType::class, [
                 'class' => Clan::class,
                 'choice_label' => 'nombre',
-                'placeholder' => 'Selecciona un clan',
+                'expanded' => true,
+                'multiple' => false,
                 'label' => 'Clan',
-                ])
+            ])
 
             ->add('naturaleza', TextType::class,[
                     'label'=>'Naturaleza del personaje'

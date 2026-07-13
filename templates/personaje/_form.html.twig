@@ -1,64 +1,184 @@
 {{ form_start(form) }}
 
+{#-----#}
+{#
 <div class="max-w-2xl mx-auto bg-zinc-900 border border-zinc-700 rounded-xl shadow-2xl p-8">
+#}
+{#-----#}
+<div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-    <h1 class="text-4xl font-bold text-red-200 mb-2">
-        Crear nuevo personaje
-    </h1>
+    {#--- Columna izquierda ---#}
+    <div class="lg:col-span-2 bg-zinc-900 border border-zinc-700 rounded-xl shadow-2xl p-8">
+        <h1 class="text-4xl font-bold text-red-200 mb-2">
+            Crear nuevo personaje
+        </h1>
 
-    <p class="text-zinc-400 mb-8">
-        Todo vampiro tiene una historia.
-        Empecemos por los aspectos básicos de tu personaje.
-        Elije tu clan, naturaleza, conducta, concepto y si cuenta con algo de experiencia.
-    </p>
+        <p class="text-zinc-400 mb-8">
+            Todo vampiro tiene una historia.
+            Empecemos por los aspectos básicos de tu personaje.
+            Elije tu clan, naturaleza, conducta, concepto y si cuenta con algo de experiencia.
+        </p>
 
-    <div class="space-y-6">
+        <div class="space-y-6">
 
-        <div>
-            {{ form_label(form.nombre, null, {'label_attr': {'class': 'block text-zinc-300 mb-2'}}) }}
-            {{ form_widget(form.nombre, {'attr': {'class': 'w-full rounded-lg bg-zinc-800 border border-zinc-600 text-white p-3'}}) }}
-            {{ form_errors(form.nombre) }}
+            {#--- Nombre ---#}
+            <div>
+                {{ form_label(form.nombre, null, {'label_attr': {'class': 'block text-zinc-300 mb-2'}}) }}
+                {{ form_widget(form.nombre, {'attr': {'class': 'w-full rounded-lg bg-zinc-800 border border-zinc-600 text-white p-3'}}) }}
+                {{ form_errors(form.nombre) }}
+            </div>
+
+            {#--- Naturaleza ---#}
+            <div
+                data-titulo="Naturaleza" 
+                data-ayuda="
+                El como tu personaje es realmente en su fuero interno.
+                Cada vez que consiga comportarse en base a su naturaleza 
+                y obtener un resultado conveniente recupera un punto de fuerza de voluntad"
+                >
+                {{ form_label(form.naturaleza, null, {'label_attr': {'class': 'block text-zinc-300 mb-2'}}) }}
+                {{ form_widget(form.naturaleza, {'attr': {'class': 'w-full rounded-lg bg-zinc-800 border border-zinc-600 text-white p-3'}}) }}
+                {{ form_errors(form.naturaleza) }}
+            </div>
+
+            {#--- Conducta ---#}
+            <div 
+                data-titulo="Conducta"
+                data-ayuda="
+                El como tu personaje se muestra al mundo, 
+                la forma de comportarse que entiende que es mas funcional a sus objetivos.
+                Una vez establecido el jugador debera ser fiel a ese modus operandi."
+                >
+                {{ form_label(form.conducta, null, {'label_attr': {'class': 'block text-zinc-300 mb-2'}}) }}
+                {{ form_widget(form.conducta, {'attr': {'class': 'w-full rounded-lg bg-zinc-800 border border-zinc-600 text-white p-3'}}) }}
+                {{ form_errors(form.conducta) }}
+            </div>
+            
+            {#--- Concepto ---#}
+            <div 
+                data-titulo="Concepto" 
+                data-ayuda="
+                Descripcion simple y compacta que resuma tu personaje"
+            >
+                {{ form_label(form.concepto, null, {'label_attr': {'class': 'block text-zinc-300 mb-2'}}) }}
+                {{ form_widget(form.concepto, {'attr': {'class': 'w-full rounded-lg bg-zinc-800 border border-zinc-600 text-white p-3'}}) }}
+                {{ form_errors(form.concepto) }}
+            </div>
+
+            {#--- Clan ---#}
+            
+            <div
+                data-titulo="Clan",  
+                data-ayuda="
+                El clan es un aspecto clave de tu personaje
+                pues determina entre otras cosas
+                sus poderes vampiricos innatos(disciplinas) y su debilidad vampirica especifica."
+                >
+                {{ form_label(form.clan, null, {'label_attr': {'class': 'block text-zinc-300 mb-2'}}) }}
+                
+                {#------------------#}
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    {% set iconosClan = {
+                        'Assamita':'🗡️',
+                        'Brujah':'✊',
+                        'Gangrel':'🐺',
+                        'Lasombra':'💀',
+                        'Malkavian':'🌀',
+                        'Nosferatu':'🦇',
+                        'Ministerio':'🐍',
+                        'Toreador':'🌹',
+                        'Tremere':'🔺',
+                        'Tzimisce':'🦴',
+                        'Ventrue':'👑',
+                        'Ravnos':'🎭'                    }
+                    %}
+
+                    {% for choice in form.clan %}
+
+                        <label
+                            class="cursor-pointer rounded-xl border-2 border-zinc-700 bg-zinc-800 hover:border-red-700 transition p-4 text-center peer-checked:border-red-600">
+
+                            {{ form_widget(choice, {
+                                attr: {
+                                    class: 'hidden peer'
+                                }
+                            }) }}
+
+                            <div class="text-4xl mb-2">
+                                <div class="text-4xl mb-2">
+                                    {{ iconosClan[choice.vars.label]|default('❓') }}
+                                </div>
+                            </div>
+
+                            <div class="font-semibold text-zinc-200">
+                                {{ choice.vars.label }}
+                            </div>
+
+                        </label>
+
+                    {% endfor %}
+                </div>
+                {#------------------#}
+
+                {{ form_errors(form.clan) }}
+            </div>
+
+            <div>
+                {{ form_label(form.experiencia, null, {'label_attr': {'class': 'block text-zinc-300 mb-2'}}) }}
+                {{ form_widget(form.experiencia, {'attr': {'class': 'w-full rounded-lg bg-zinc-800 border border-zinc-600 text-white p-3'}}) }}
+                {{ form_errors(form.experiencia) }}
+            </div>
+
         </div>
 
-        <div>
-            {{ form_label(form.naturaleza, null, {'label_attr': {'class': 'block text-zinc-300 mb-2'}}) }}
-            {{ form_widget(form.naturaleza, {'attr': {'class': 'w-full rounded-lg bg-zinc-800 border border-zinc-600 text-white p-3'}}) }}
-            {{ form_errors(form.naturaleza) }}
+        <div class="mt-8 text-right">
+            <button class="bg-red-800 hover:bg-red-700 text-white px-6 py-3 rounded-lg transition">
+                <a href="{{ path('app_personaje_index') }}">← Back to list</a>
+            </button>
+            <button class="bg-red-800 hover:bg-red-700 text-white px-6 py-3 rounded-lg transition">
+                Comenzar creación → 
+            </button>
         </div>
-        <div>
-            {{ form_label(form.conducta, null, {'label_attr': {'class': 'block text-zinc-300 mb-2'}}) }}
-            {{ form_widget(form.conducta, {'attr': {'class': 'w-full rounded-lg bg-zinc-800 border border-zinc-600 text-white p-3'}}) }}
-            {{ form_errors(form.conducta) }}
-        </div>
-        <div>
-            {{ form_label(form.concepto, null, {'label_attr': {'class': 'block text-zinc-300 mb-2'}}) }}
-            {{ form_widget(form.concepto, {'attr': {'class': 'w-full rounded-lg bg-zinc-800 border border-zinc-600 text-white p-3'}}) }}
-            {{ form_errors(form.concepto) }}
-        </div>
-
-        <div>
-            {{ form_label(form.clan, null, {'label_attr': {'class': 'block text-zinc-300 mb-2'}}) }}
-            {{ form_widget(form.clan, {'attr': {'class': 'w-full rounded-lg bg-zinc-800 border border-zinc-600 text-white p-3'}}) }}
-            {{ form_errors(form.clan) }}
-        </div>
-
-        <div>
-            {{ form_label(form.experiencia, null, {'label_attr': {'class': 'block text-zinc-300 mb-2'}}) }}
-            {{ form_widget(form.experiencia, {'attr': {'class': 'w-full rounded-lg bg-zinc-800 border border-zinc-600 text-white p-3'}}) }}
-            {{ form_errors(form.experiencia) }}
-        </div>
-
     </div>
 
-    <div class="mt-8 text-right">
-        <button class="bg-red-800 hover:bg-red-700 text-white px-6 py-3 rounded-lg transition">
-            <a href="{{ path('app_personaje_index') }}">← Back to list</a>
-        </button>
-        <button class="bg-red-800 hover:bg-red-700 text-white px-6 py-3 rounded-lg transition">
-            Comenzar creación → 
-        </button>
+    {#--- Columna derecha ---#}
+    <div
+        id="panel-ayuda"
+        class="bg-zinc-900 border border-zinc-700 rounded-xl p-6 h-fit sticky top-6">
+
+        <h3 id="titulo-ayuda" class="text-2xl font-semibold text-red-200 mb-4">
+            Ayuda
+        </h3>
+
+        <p id="texto-ayuda" class="text-lg text-zinc-300 leading-8">
+            Sitúa el cursor sobre un campo para obtener información.
+        </p>
+
     </div>
 
 </div>
 
+<script>
+
+const titulo = document.getElementById('titulo-ayuda');
+const texto = document.getElementById('texto-ayuda');
+
+document.querySelectorAll('[data-ayuda]').forEach(element => {
+
+    element.addEventListener('mouseenter', () => {
+        titulo.textContent = element.dataset.titulo;
+        texto.textContent = element.dataset.ayuda;
+    });
+
+    element.addEventListener('mouseleave', () => {
+        titulo.textContent = 'AYUDA';
+        texto.textContent = 'Sitúa el cursor sobre un campo para obtener información.';
+    });
+
+});
+
+</script>
+
+
 {{ form_end(form) }}
+

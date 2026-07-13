@@ -3,29 +3,100 @@
 {% block title %}Log in!{% endblock %}
 
 {% block body %}
-<form method="post">
-    {% if error %}
-        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-    {% endif %}
+<div class="min-h-screen bg-zinc-950 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    
+    <div class="max-w-md w-full mx-auto bg-zinc-900 rounded-xl shadow-2xl p-8 border border-zinc-700">
 
-    {% if app.user %}
-        <div class="mb-3">
-            You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
+        {# MENSAJES DE ERROR DE AUTENTICACIÓN #}
+        {% if error %}
+            <div class="mb-6 rounded-lg border border-red-900 bg-red-950/50 p-4 text-red-200 text-sm">
+                {{ error.messageKey|trans(error.messageData, 'security') }}
+            </div>
+        {% endif %}
+
+        {# MENSAJE DE SESIÓN ACTIVA #}
+        {% if app.user %}
+            <div class="mb-6 rounded-lg border border-zinc-700 bg-zinc-800 p-4 text-zinc-300 text-sm">
+                Ya has iniciado sesión como <span class="text-red-300 font-semibold">{{ app.user.userIdentifier }}</span>. 
+                <a href="{{ path('app_logout') }}" class="text-red-400 hover:text-red-300 underline font-medium ml-1 transition">Cerrar sesión</a>
+            </div>
+        {% endif %}
+
+        {# CABECERA DEL FORMULARIO #}
+        <div class="mb-8">
+            <h1 class="text-4xl font-bold text-red-200 mb-2">
+                Iniciar Sesión
+            </h1>
+            <p class="text-zinc-400 text-sm">
+                Introduce tus credenciales para acceder a tus personajes.
+            </p>
         </div>
-    {% endif %}
 
-    <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-    <label for="inputUsername">Username</label>
-    <input type="text" value="{{ last_username }}" name="username" id="inputUsername" class="form-control" autocomplete="username" required autofocus>
-    <label for="inputPassword">Password</label>
-    <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
+        {# FORMULARIO #}
+        <form method="post" class="space-y-6">
+            
+            {# CAMPO USERNAME #}
+            <div>
+                <label for="inputUsername" class="block text-sm font-medium text-zinc-300 mb-2">
+                    Nombre de usuario
+                </label>
+                <input 
+                    type="text" 
+                    value="{{ last_username }}" 
+                    name="username" 
+                    id="inputUsername" 
+                    class="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-3 text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-red-800 focus:border-transparent transition" 
+                    autocomplete="username" 
+                    required 
+                    autofocus
+                    placeholder="Tu usuario"
+                >
+            </div>
 
-    <input type="hidden" name="_csrf_token"
-           value="{{ csrf_token('authenticate') }}"
-    >
+            {# CAMPO PASSWORD #}
+            <div>
+                <label for="inputPassword" class="block text-sm font-medium text-zinc-300 mb-2">
+                    Contraseña
+                </label>
+                <input 
+                    type="password" 
+                    name="password" 
+                    id="inputPassword" 
+                    class="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-3 text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-red-800 focus:border-transparent transition" 
+                    autocomplete="current-password" 
+                    required
+                    placeholder="••••••••"
+                >
+            </div>
 
-    <button class="btn btn-lg btn-primary" type="submit">
-        Sign in
-    </button>
-</form>
+            {# TOKEN CSRF #}
+            <input 
+                type="hidden" 
+                name="_csrf_token"
+                value="{{ csrf_token('authenticate') }}"
+            >
+
+            {# BOTÓN DE ENVÍO #}
+            <div class="pt-4">
+                <button
+                    type="submit"
+                    class="w-full bg-red-800 hover:bg-red-700 text-white px-8 py-3 rounded-lg font-semibold transition shadow-md shadow-red-950/50">
+                    Entrar →
+                </button>
+            </div>
+
+            {# BOTÓN DE REGISTRO #}
+            <div class="pt-3">
+                <a
+                    href="{{ path('app_register') }}"
+                    class="block w-full text-center bg-gray-800 hover:bg-gray-700 text-white px-8 py-3 rounded-lg font-semibold transition">
+                    Crear una cuenta
+                </a>
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
 {% endblock %}
