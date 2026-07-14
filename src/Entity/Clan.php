@@ -58,6 +58,31 @@ class Clan
         return $this;
     }
 
+
+    public function getDescripcion(): ?string
+    {
+        return $this->descripcion;
+    }
+
+    public function setDescripcion(string $descripcion): static
+    {
+        $this->descripcion = $descripcion;
+
+        return $this;
+    }
+
+    public function getDebilidad(): ?string
+    {
+        return $this->debilidad;
+    }
+
+    public function setDebilidad(string $debilidad): static
+    {
+        $this->debilidad = $debilidad;
+
+        return $this;
+    }
+
     /**
      * @return Collection<int, ClanDisciplina>
      */

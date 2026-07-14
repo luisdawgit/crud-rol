@@ -57,9 +57,29 @@ class PersonajeController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
 
+        $clanesInfo = [];
+        
+        foreach ($entityManager->getRepository(\App\Entity\Clan::class)->findAll() as $clan) {
+
+            $disciplinas = [];
+
+            foreach ($clan->getClanDisciplinas() as $clanDisciplina) {
+                $disciplinas[] = $clanDisciplina->getDisciplina()->getNombre();
+            }
+
+            $clanesInfo[$clan->getId()] = [
+                'id' => $clan->getId(),
+                'nombre' => $clan->getNombre(),
+                'descripcion' => $clan->getDescripcion(),
+                'debilidad' => $clan->getDebilidad(),
+                'disciplinas' => $disciplinas
+            ];
+        }
+        
         $personaje = new Personaje();
         $form = $this->createForm(PersonajeType::class, $personaje);
         $form->handleRequest($request);
+        
 
         if ($form->isSubmitted() && $form->isValid()) {
             
@@ -91,6 +111,7 @@ class PersonajeController extends AbstractController
         return $this->renderForm('personaje/new.html.twig', [
             'personaje' => $personaje,
             'form' => $form,
+            'clanesInfo' => $clanesInfo
         ]);
     }
 

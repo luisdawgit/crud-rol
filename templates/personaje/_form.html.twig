@@ -68,7 +68,7 @@
             {#--- Clan ---#}
             
             <div
-                data-titulo="Clan",  
+                data-titulo="Clan"
                 data-ayuda="
                 El clan es un aspecto clave de tu personaje
                 pues determina entre otras cosas
@@ -96,7 +96,9 @@
                     {% for choice in form.clan %}
 
                         <label
-                            class="cursor-pointer rounded-xl border-2 border-zinc-700 bg-zinc-800 hover:border-red-700 transition p-4 text-center peer-checked:border-red-600">
+                            class="clan-card cursor-pointer rounded-xl border-2 border-zinc-700 bg-zinc-800 hover:border-red-700 transition p-4 text-center"
+                            data-clan-id="{{ choice.vars.value }}"
+                            >
 
                             {{ form_widget(choice, {
                                 attr: {
@@ -113,7 +115,6 @@
                             <div class="font-semibold text-zinc-200">
                                 {{ choice.vars.label }}
                             </div>
-
                         </label>
 
                     {% endfor %}
@@ -154,31 +155,97 @@
             Sitúa el cursor sobre un campo para obtener información.
         </p>
 
+        {#--- Columna derecha Clan seleccionado ---#}
+        <hr class="my-6 border-zinc-700">
+
+        <div id="clan-seleccionado"></div>
+
+        <div id="clan-hover" class="mt-6"></div>
     </div>
+
 
 </div>
 
 <script>
 
-const titulo = document.getElementById('titulo-ayuda');
-const texto = document.getElementById('texto-ayuda');
+    const titulo = document.getElementById('titulo-ayuda');
+    const texto = document.getElementById('texto-ayuda');
 
-document.querySelectorAll('[data-ayuda]').forEach(element => {
+    document.querySelectorAll('[data-ayuda]').forEach(element => {
 
-    element.addEventListener('mouseenter', () => {
-        titulo.textContent = element.dataset.titulo;
-        texto.textContent = element.dataset.ayuda;
+        element.addEventListener('mouseenter', () => {
+            titulo.textContent = element.dataset.titulo;
+            texto.textContent = element.dataset.ayuda;
+        });
+
+        element.addEventListener('mouseleave', () => {
+            titulo.textContent = 'AYUDA';
+            texto.textContent = 'Sitúa el cursor sobre un campo para obtener información.';
+        });
+
     });
 
-    element.addEventListener('mouseleave', () => {
-        titulo.textContent = 'AYUDA';
-        texto.textContent = 'Sitúa el cursor sobre un campo para obtener información.';
-    });
+    const panelSeleccionado = document.getElementById('clan-seleccionado');
+    const panelHover = document.getElementById('clan-hover');
 
-});
+    function crearFichaClan(clan, titulo)
+    {
+        return `
+            <div class="border-t border-zinc-700 pt-4">
 
+                <h3 class="text-red-300 font-bold mb-3">${titulo}</h3>
+
+                <h4 class="text-xl text-white font-semibold">${clan.nombre}</h4>
+
+                <p class="text-zinc-300 mt-2">
+                    ${clan.descripcion}
+                </p>
+
+                <p class="mt-4 text-white">
+                    <strong>Debilidad:</strong><br>
+                    ${clan.debilidad}
+                </p>
+
+                <p class="mt-4 text-white">
+                    <strong>Disciplinas:</strong><br>
+                    ${clan.disciplinas.join(', ')}
+                </p>
+
+            </div>
+        `;
+    }
 </script>
 
+<script>
+    const clanesInfo = {{ clanesInfo|json_encode|raw }};
+    console.log(clanesInfo);
+    
+    const tarjetasClan = document.querySelectorAll('.clan-card');
+
+    tarjetasClan.forEach(tarjeta => {
+
+        tarjeta.addEventListener('mouseenter', () => {
+            console.log(tarjeta.dataset.clanId);
+            
+            const clan = clanesInfo[tarjeta.dataset.clanId];
+
+
+            console.log(panelHover);
+            console.log(clan);
+            panelHover.innerHTML = crearFichaClan(clan, clan.nombre);
+
+        });
+
+        tarjeta.addEventListener('mouseleave', () => {
+            {# 
+            #}
+            panelHover.innerHTML = '';
+
+        });
+
+    });
+
+</script>
 
 {{ form_end(form) }}
 
