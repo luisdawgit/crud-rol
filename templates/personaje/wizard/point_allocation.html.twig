@@ -58,7 +58,6 @@
                 (<span id="{{ categoria|lower }}_actual">0</span>)
             </h2>
 
-
             {% for item in lista %}
 
             <div class="point-row flex items-center justify-between py-3 border-b border-zinc-800">
@@ -86,7 +85,7 @@
                         <input
                             {#
                             type="hidden"
-                            #}"
+                            #}
                             value="{{ minimo }}"
                             class="point-input"
                             name="{{ inputName }}[{{ item.id }}]"
@@ -101,7 +100,6 @@
                     </div>
 
                 </div>
-
             </div>
 
             {% endfor %}

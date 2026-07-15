@@ -108,6 +108,7 @@ class PersonajeController extends AbstractController
             $entityManager->persist($personaje);
             $entityManager->flush();
 
+            return $this->redirect('/personaje/' . $personaje->getId() . '/disciplinas');//---
             return $this->redirectToRoute('app_personaje_disciplinas', [
                 'id' => $personaje->getId()
             ]);
@@ -517,10 +518,15 @@ class PersonajeController extends AbstractController
         ) {
             $disciplina = $clanDisciplina->getDisciplina();
 
+            /*
             $disciplinas[] = [
                 'nombre' => $disciplina->getNombre(),
                 'descripcion' => $disciplina->getDescripcion(),
             ];
+            */
+
+            $disciplinas[] = $clanDisciplina->getDisciplina();
+
         }
 
         $disciplinasAgrupadas = [
@@ -576,6 +582,7 @@ class PersonajeController extends AbstractController
             );
         }
 
+        //dd($personaje->getClan()->getClanDisciplinas()->count());
         return $this->render('personaje/wizard/point_allocation.html.twig', [
             'titulo' => 'Disciplinas',
             'rasgosAgrupados' => $disciplinasAgrupadas,

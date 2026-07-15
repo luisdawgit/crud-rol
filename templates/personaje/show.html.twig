@@ -34,6 +34,27 @@
                         </div>
 
                         <div>
+                            <span class="font-semibold">Naturaleza:</span>
+                            <span class="text-red-700">
+                                {{ personaje.naturaleza }}
+                            </span>
+                        </div>
+
+                        <div>
+                            <span class="font-semibold">Conducta:</span>
+                            <span class="text-red-700">
+                                {{ personaje.conducta }}
+                            </span>
+                        </div>
+
+                        <div>
+                            <span class="font-semibold">Concepto:</span>
+                            <span class="text-red-700">
+                                {{ personaje.concepto }}
+                            </span>
+                        </div>
+
+                        <div>
                             <span class="font-semibold">
                                 Experiencia:
                             </span>
@@ -510,7 +531,7 @@
                                 Debilidad de clan
                             </h2>
                             <div class="flex gap-1 items-center justify-center">
-                                Se sacara de la base de datos
+                                {{ personaje.clan.debilidad|default('Sin debilidad registrada') }}
                             </div>
                         </div>
 
