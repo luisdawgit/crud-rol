@@ -64,7 +64,12 @@ class PersonajeController extends AbstractController
             $disciplinas = [];
 
             foreach ($clan->getClanDisciplinas() as $clanDisciplina) {
-                $disciplinas[] = $clanDisciplina->getDisciplina()->getNombre();
+                $disciplina = $clanDisciplina->getDisciplina();
+
+                $disciplinas[] = [
+                    'nombre' => $disciplina->getNombre(),
+                    'descripcion' => $disciplina->getDescripcion(),
+                ];
             }
 
             $clanesInfo[$clan->getId()] = [
@@ -510,7 +515,12 @@ class PersonajeController extends AbstractController
             $personaje->getClan()->getClanDisciplinas()
             as $clanDisciplina
         ) {
-            $disciplinas[] = $clanDisciplina->getDisciplina();
+            $disciplina = $clanDisciplina->getDisciplina();
+
+            $disciplinas[] = [
+                'nombre' => $disciplina->getNombre(),
+                'descripcion' => $disciplina->getDescripcion(),
+            ];
         }
 
         $disciplinasAgrupadas = [

@@ -62,6 +62,21 @@ class Disciplina
         return $this->clanDisciplinas;
     }
 
+    
+/* ----------------- */
+    public function getDescripcion(): ?string
+    {
+        return $this->descripcion;
+    }
+
+    public function setDescripcion(string $descripcion): static
+    {
+        $this->descripcion = $descripcion;
+
+        return $this;
+    }
+/* ----------------- */
+
     public function addClanDisciplina(ClanDisciplina $clanDisciplina): static
     {
         if (!$this->clanDisciplinas->contains($clanDisciplina)) {
@@ -118,12 +133,6 @@ class Disciplina
     {
         return $this->getNombre();
     }
- 
-    /*
-    public function __toString(): string
-    {
-        return $this->nombre ?? '';
-    }
-    */
+
 
 }

@@ -78,6 +78,7 @@
                 
                 {#------------------#}
                 <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+
                     {% set iconosClan = {
                         'Assamita':'🗡️',
                         'Brujah':'✊',
@@ -96,15 +97,10 @@
                     {% for choice in form.clan %}
 
                         <label
-                            class="clan-card cursor-pointer rounded-xl border-2 border-zinc-700 bg-zinc-800 hover:border-red-700 transition p-4 text-center"
+                            class="clan-card cursor-pointer rounded-xl border-2 border-zinc-700 bg-zinc-800 p-4 text-center transition hover:border-4 hover:border-red-700"
                             data-clan-id="{{ choice.vars.value }}"
                             >
-
-                            {{ form_widget(choice, {
-                                attr: {
-                                    class: 'hidden peer'
-                                }
-                            }) }}
+                            {{ form_widget(choice, { attr: { class: 'hidden clan-radio' }}) }}
 
                             <div class="text-4xl mb-2">
                                 <div class="text-4xl mb-2">
@@ -114,6 +110,7 @@
 
                             <div class="font-semibold text-zinc-200">
                                 {{ choice.vars.label }}
+
                             </div>
                         </label>
 
@@ -166,7 +163,13 @@
 
 </div>
 
+
+
+
 <script>
+/* Crea el HTML de la ficha informativa de un clan para mostrarlo en el panel de ayuda.
+Recibe un objeto clan con nombre, descripción, debilidad y disciplinas, y un título
+para mostrar como encabezado. Devuelve una cadena con el marcado HTML generado.*/
 
     const titulo = document.getElementById('titulo-ayuda');
     const texto = document.getElementById('texto-ayuda');
@@ -190,11 +193,19 @@
 
     function crearFichaClan(clan, titulo)
     {
+        const listaDisciplinas = clan.disciplinas.map(d => `
+            <li class="mt-3">
+                <span class="font-semibold text-red-300">${d.nombre}</span><br>
+                <span class="text-zinc-300">${d.descripcion}</span>
+            </li>
+        `).join('');
         return `
             <div class="border-t border-zinc-700 pt-4">
 
+                {#
                 <h3 class="text-red-300 font-bold mb-3">${titulo}</h3>
-
+                #}
+                <h3 class="text-red-300 font-bold mb-3">Clan elegido</h3>
                 <h4 class="text-xl text-white font-semibold">${clan.nombre}</h4>
 
                 <p class="text-zinc-300 mt-2">
@@ -206,46 +217,76 @@
                     ${clan.debilidad}
                 </p>
 
-                <p class="mt-4 text-white">
-                    <strong>Disciplinas:</strong><br>
-                    ${clan.disciplinas.join(', ')}
+                <p class="mt-4 text-white font-semibold">
+                    Disciplinas de clan
                 </p>
 
+                <ul class="mt-2">
+                    ${listaDisciplinas}
+                </ul>
             </div>
         `;
     }
 </script>
 
+//Añade el evento de crearFichaClan() pasar por encima del clan
 <script>
+    // Datos de los clanes pasados desde Symfony/Twig al script como JSON.
+    // clanesInfo se utiliza para obtener la información completa de cada clan
+    // a partir del identificador almacenado en el atributo data-clan-id.
     const clanesInfo = {{ clanesInfo|json_encode|raw }};
     console.log(clanesInfo);
-    
+
+    // Selecciona todas las tarjetas de clan en la página.
     const tarjetasClan = document.querySelectorAll('.clan-card');
 
+    // Añade eventos de hover a cada tarjeta para mostrar la informacion del clan.
     tarjetasClan.forEach(tarjeta => {
-
         tarjeta.addEventListener('mouseenter', () => {
+            // Identificador del clan desde el atributo data-clan-id.
             console.log(tarjeta.dataset.clanId);
-            
             const clan = clanesInfo[tarjeta.dataset.clanId];
-
-
             console.log(panelHover);
             console.log(clan);
-            panelHover.innerHTML = crearFichaClan(clan, clan.nombre);
 
+            // Actualiza el panel de hover con los datos del clan seleccionado.
+            panelHover.innerHTML = crearFichaClan(clan, clan.nombre);
         });
 
         tarjeta.addEventListener('mouseleave', () => {
-            {# 
-            #}
+            // Limpia el panel cuando el puntero sale de la tarjeta.
             panelHover.innerHTML = '';
-
         });
+    });
+</script>
+
+<script>
+const radios = document.querySelectorAll('.clan-radio');
+
+console.log('radios.length:'+ radios.length);
+
+radios.forEach(radio => {
+
+    radio.addEventListener('change', () => {
+
+        console.log('Cambio detectado');
+
+        document.querySelectorAll('.clan-card').forEach(card => {
+            card.classList.remove('border-4', 'border-red-600');
+            card.classList.add('border-2', 'border-zinc-700');
+        });
+
+        const card = radio.closest('.clan-card');
+        console.log(card);
+
+        card.classList.remove('border-2', 'border-zinc-700');
+        card.classList.add('border-4', 'border-red-600');
 
     });
 
+});
 </script>
+
 
 {{ form_end(form) }}
 
