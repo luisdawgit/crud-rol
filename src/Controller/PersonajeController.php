@@ -237,7 +237,9 @@ class PersonajeController extends AbstractController
             'inputName' => 'atributos',
             'minimo' => 1,
             'maximo' => 5,
-            'regla' => $regla
+            'regla' => $regla,
+            'tipoValidacion' => 'categorias',   // ← NUEVO
+            'distribucion' => $distribucion,    // ← NUEVO (ya existe la variable)
         ]);
     }
     //atributos fin
@@ -324,7 +326,9 @@ class PersonajeController extends AbstractController
             'inputName' => 'habilidades',
             'minimo' => 0,
             'maximo' => 3,
-            'regla' => $regla
+            'regla' => $regla,
+            'tipoValidacion' => 'categorias',   // ← NUEVO
+            'distribucion' => $distribucion,    // ← NUEVO (ya existe la variable)
         ]);
     }
     //habilidad fin
@@ -400,7 +404,9 @@ class PersonajeController extends AbstractController
             'inputName' => 'trasfondos',
             'minimo' => 0,
             'maximo' => 3,
-            'regla' => $regla
+            'regla' => $regla,
+            'tipoValidacion' => 'categorias',   // ← NUEVO
+            'distribucion' => $distribucion,    // ← NUEVO (ya existe la variable)
         ]);
     }
     //Trasfondos fin
@@ -481,7 +487,9 @@ class PersonajeController extends AbstractController
             'inputName' => 'virtudes',
             'minimo' => 1,
             'maximo' => 5,
-            'regla' => $regla
+            'regla' => $regla,
+            'tipoValidacion' => 'categorias',   // ← NUEVO
+            'distribucion' => $distribucion,    // ← NUEVO (ya existe la variable)
         ]);
 
         $humanidad = $consciencia + $autocontrol;
@@ -589,7 +597,9 @@ class PersonajeController extends AbstractController
             'inputName' => 'disciplinas',
             'minimo' => 0,
             'maximo' => 3,
-            'regla' => $regla
+            'regla' => $regla,
+            'tipoValidacion' => 'categorias',   // ← NUEVO
+            'distribucion' => $distribucion,    // ← NUEVO (ya existe la variable)
         ]);
 
         $humanidad = $consciencia + $autocontrol;

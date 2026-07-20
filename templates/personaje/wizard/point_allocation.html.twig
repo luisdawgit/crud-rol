@@ -24,7 +24,11 @@
             {% endfor %}
         </div>
 
-    <form method="post"> 
+    <form
+        method="post"
+        data-tipo-validacion="{{ tipoValidacion }}"
+        data-distribucion="{{ distribucion|json_encode }}"
+    >
 
 
         <h1 class="text-4xl font-bold text-red-200 mb-2">
@@ -37,13 +41,18 @@
                 {{ regla }}
             </p>
         </div>
-        
+
+
         <div class="mt-10 text-right">
             <button
-                class="bg-red-800 hover:bg-red-700 px-8 py-3 rounded-lg font-semibold transition">
+                id="btn-continuar"
+                class="bg-red-800 hover:bg-red-700 px-8 py-3 rounded-lg font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed">
                 Continuar →
             </button>
+
+            <p id="mensaje_validacion" class="mt-3 text-sm font-semibold"></p>
         </div>
+
         <br>
         <br>
 
