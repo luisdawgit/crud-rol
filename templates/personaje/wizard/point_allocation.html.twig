@@ -2,33 +2,22 @@
 
 {% block body %}
 
+<form
+    method="post"
+    data-tipo-validacion="{{ tipoValidacion }}"
+    data-distribucion="{{ distribucion|json_encode }}"
+>
 
-<div class="max-w-7xl mx-auto grid lg:grid-cols-3 gap-8">
+    <div class="max-w-7xl mx-auto grid lg:grid-cols-3 gap-8">
 
-    {# Columna izquierda (2/3) #}
-    <div class="lg:col-span-2">
-        <div class="bg-zinc-900 rounded-xl shadow-2xl p-8 border border-zinc-700">
-            <div id="formulario" class="max-w-4xl mx-auto bg-zinc-900 rounded-xl shadow-2xl p-8 border border-zinc-700">
-
-                <form
-                    method="post"
-                    data-tipo-validacion="{{ tipoValidacion }}"
-                    data-distribucion="{{ distribucion|json_encode }}"
-                >
+        {# Columna izquierda (2/3) #}
+        <div class="lg:col-span-2">
+            <div class="bg-zinc-900 rounded-xl shadow-2xl p-8 border border-zinc-700">
+                <div id="formulario" class="max-w-4xl mx-auto bg-zinc-900 rounded-xl shadow-2xl p-8 border border-zinc-700">
 
                     <h1 class="text-4xl font-bold text-red-200 mb-2">
                         {{ titulo }}
                     </h1>
-
-                    <div id="continuar" class="mt-10 text-right">
-
-                        <p id="mensaje_validacion" class="mt-3 text-sm font-semibold"></p>
-                        <button
-                            id="btn-continuar"
-                            class="bg-red-800 hover:bg-red-700 px-8 py-3 rounded-lg font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed">
-                            Continuar →
-                        </button>
-                    </div>
 
                     {% for categoria, lista in rasgosAgrupados %}
 
@@ -85,35 +74,22 @@
 
                     {% endfor %}
 
-                    <script src="{{ asset('js/point_allocator.js') }}"></script>
-
-                    <script>
-
-                        initPointAllocator({
-                            minimo: {{ minimo }},
-                            base: {{ minimo }},
-                            maximo: {{ maximo }}
-                        });
-
-                    </script>
-
-                </form>
+                </div>
             </div>
         </div>
-    </div>
 
-    {# Columna derecha (1/3) #}
-    <aside class="sticky top-6 self-start">
-        <div class="bg-zinc-900 rounded-xl border border-zinc-700 p-6">
+        {# Columna derecha (1/3) #}
+        <aside class="sticky top-6 self-start">
+            <div class="bg-zinc-900 rounded-xl border border-zinc-700 p-6">
 
-            <h2 class="text-xl font-bold text-red-300 mb-4">
-                Guía
-            </h2>
+                <h2 class="text-xl font-bold text-red-300 mb-4">
+                    Guía
+                </h2>
 
-            <div id="dinamicos">
+                <div id="dinamicos">
                     <div id="regla info" class="mb-6 rounded-lg border border-zinc-700 bg-zinc-800 p-4">
                         <p class="text-zinc-400 mb-2">
-                        Instrucciones de distribución:
+                            Instrucciones de distribución:
                         </p>
                         <p class="text-zinc-300">
                             {{ regla }}
@@ -121,16 +97,11 @@
                     </div>
 
                     <div id="mensajes info" class="mb-8 text-lg text-zinc-300">
-
-                        <span
-                            id="distribucion"
-                            class="font-bold text-red-300">
-                        </span>
+                        <span id="distribucion" class="font-bold text-red-300"></span>
 
                         {# Aviso puntos repartidos mal #}
 
-                        <p id="mensaje_error" style="color:red;">
-                        </p>
+                        <p id="mensaje_error" style="color:red;"></p>
 
                         {% for message in app.flashes('error') %}
                             <div style="color:red;">
@@ -138,15 +109,33 @@
                             </div>
                         {% endfor %}
                     </div>
+
+                    <div id="continuar" class="mt-6">
+                        <p id="mensaje_validacion" class="mb-3 text-sm font-semibold"></p>
+                        <button
+                            id="btn-continuar"
+                            type="submit"
+                            class="w-full bg-red-800 hover:bg-red-700 px-8 py-3 rounded-lg font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            Continuar →
+                        </button>
+                    </div>
+                </div>
             </div>
+        </aside>
 
-        </div>
-        
-    </aside>
+    </div>
 
+    <script src="{{ asset('js/point_allocator.js') }}"></script>
 
-
-</div>
+    <script>
+        initPointAllocator({
+            minimo: {{ minimo }},
+            base: {{ minimo }},
+            maximo: {{ maximo }}
+        });
+    </script>
+</form>
 
 
 {% endblock %}
