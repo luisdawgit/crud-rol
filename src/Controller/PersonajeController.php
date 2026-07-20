@@ -405,7 +405,7 @@ class PersonajeController extends AbstractController
             'minimo' => 0,
             'maximo' => 3,
             'regla' => $regla,
-            'tipoValidacion' => 'categorias',   // ← NUEVO
+            'tipoValidacion' => 'total',   // ← NUEVO
             'distribucion' => $distribucion,    // ← NUEVO (ya existe la variable)
         ]);
     }
@@ -488,7 +488,7 @@ class PersonajeController extends AbstractController
             'minimo' => 1,
             'maximo' => 5,
             'regla' => $regla,
-            'tipoValidacion' => 'categorias',   // ← NUEVO
+            'tipoValidacion' => 'total',   // ← NUEVO
             'distribucion' => $distribucion,    // ← NUEVO (ya existe la variable)
         ]);
 
@@ -598,7 +598,7 @@ class PersonajeController extends AbstractController
             'minimo' => 0,
             'maximo' => 3,
             'regla' => $regla,
-            'tipoValidacion' => 'categorias',   // ← NUEVO
+            'tipoValidacion' => 'total',   // ← NUEVO
             'distribucion' => $distribucion,    // ← NUEVO (ya existe la variable)
         ]);
 
