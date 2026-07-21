@@ -136,53 +136,55 @@
         </button>
 
         <div id="contenido-atributos" class="hidden">
+            {% if personaje.personajeAtributos is empty %}
+                <p class="text-zinc-400">
+                    {{ mensaje_resumen_incompleto }}
+                </p>
+            {% else %}
+                {% set categorias = ['Fisico','Social','Mental'] %}
 
-            {% set categorias = ['Fisico','Social','Mental'] %}
+                {% for cat in categorias %}
 
-            {% for cat in categorias %}
+                    <h4 class="text-zinc-300 font-semibold mt-4 mb-2">
+                        {{ cat }}
+                    </h4>
 
-                <h4 class="text-zinc-300 font-semibold mt-4 mb-2">
-                    {{ cat }}
-                </h4>
+                    <div class="space-y-2 mb-6">
 
-                <div class="space-y-2 mb-6">
+                        {% for pa in personaje.personajeAtributos %}
 
-                    {% for pa in personaje.personajeAtributos %}
+                            {% if pa.atributo.categoria == cat %}
 
-                        {% if pa.atributo.categoria == cat %}
+                                <div class="flex justify-between items-center">
 
-                            <div class="flex justify-between items-center">
+                                    <span class="text-zinc-300 text-sm">
+                                        {{ pa.atributo.nombre }}
+                                    </span>
 
-                                <span class="text-zinc-300 text-sm">
-                                    {{ pa.atributo.nombre }}
-                                </span>
+                                    <div class="flex gap-1">
 
-                                <div class="flex gap-1">
+                                        {% for i in 1..5 %}
 
-                                    {% for i in 1..5 %}
+                                            {% if i <= pa.nivel %}
 
-                                        {% if i <= pa.nivel %}
+                                                <span class="w-2.5 h-2.5 rounded-full bg-red-400"></span>
 
-                                            <span class="w-2.5 h-2.5 rounded-full bg-red-400"></span>
+                                            {% else %}
 
-                                        {% else %}
+                                                <span class="w-2.5 h-2.5 rounded-full border border-zinc-500"></span>
 
-                                            <span class="w-2.5 h-2.5 rounded-full border border-zinc-500"></span>
-
-                                        {% endif %}
-                                        
-                                    {% endfor %}
-                                
+                                            {% endif %}
+                                            
+                                        {% endfor %}
+                                    
+                                    </div>
                                 </div>
-                            </div>
 
-                        {% else %}
-
-                        {% endif %}
-                    {% endfor %}
-                </div>
-            {% endfor %}
-
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            {% endif %}
         </div>
     </div>
 
@@ -200,58 +202,63 @@
         </button>
 
         <div id="contenido-habilidades" class="hidden">
+            {% if personaje.personajeHabilidades is empty %}
+                <p class="text-zinc-400">
+                    {{ mensaje_resumen_incompleto }}
+                </p>
+            {% else %}
+                {% set categorias = ['Talentos','Tecnicas','Conocimientos'] %}
 
-            {% set categorias = ['Talentos','Tecnicas','Conocimientos'] %}
+                {% for cat in categorias %}
+                    {% set catId = cat|lower|replace({' ': ''}) %}
 
-            {% for cat in categorias %}
-                {% set catId = cat|lower|replace({' ': ''}) %}
+                    <div class="border-t border-zinc-800 mt-3 pt-3">
+                        <button
+                            type="button"
+                            class="w-full flex justify-between items-center text-left"
+                            onclick="toggleFichaSubsection('{{ catId }}')"
+                        >
+                            <h4 class="text-zinc-300 font-semibold">
+                                {{ cat }}
+                            </h4>
 
-                <div class="border-t border-zinc-800 mt-3 pt-3">
-                    <button
-                        type="button"
-                        class="w-full flex justify-between items-center text-left"
-                        onclick="toggleFichaSubsection('{{ catId }}')"
-                    >
-                        <h4 class="text-zinc-300 font-semibold">
-                            {{ cat }}
-                        </h4>
+                            <span id="icon-habilidad-{{ catId }}" class="text-white">▲</span>
+                        </button>
 
-                        <span id="icon-habilidad-{{ catId }}" class="text-white">▲</span>
-                    </button>
+                        <div id="contenido-habilidad-{{ catId }}" class="space-y-2 mb-6 mt-3 hidden">
 
-                    <div id="contenido-habilidad-{{ catId }}" class="space-y-2 mb-6 mt-3 hidden">
+                            {% for pa in personaje.personajeHabilidades %}
 
-                        {% for pa in personaje.personajeHabilidades %}
+                                {% if pa.habilidad.categoria == cat %}
 
-                            {% if pa.habilidad.categoria == cat %}
+                                    <div class="flex justify-between items-center">
 
-                                <div class="flex justify-between items-center">
+                                        <span class="text-zinc-300 text-sm">
+                                            {{ pa.habilidad.nombre }}
+                                        </span>
 
-                                    <span class="text-zinc-300 text-sm">
-                                        {{ pa.habilidad.nombre }}
-                                    </span>
+                                        <div class="flex gap-1">
 
-                                    <div class="flex gap-1">
+                                            {% for i in 1..5 %}
 
-                                        {% for i in 1..5 %}
+                                                {% if i <= pa.nivel %}
 
-                                            {% if i <= pa.nivel %}
+                                                    <span class="w-2.5 h-2.5 rounded-full bg-red-400"></span>
+                                                {% else %}
 
-                                                <span class="w-2.5 h-2.5 rounded-full bg-red-400"></span>
-                                            {% else %}
-
-                                                <span class="w-2.5 h-2.5 rounded-full border border-zinc-500"></span>
-                                            {% endif %}
-                                        {% endfor %}
+                                                    <span class="w-2.5 h-2.5 rounded-full border border-zinc-500"></span>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
                                     </div>
-                                </div>
 
-                            {% endif %}
+                                {% endif %}
 
-                        {% endfor %}
+                            {% endfor %}
+                        </div>
                     </div>
-                </div>
-            {% endfor %}
+                {% endfor %}
+            {% endif %}
         </div>
     </div>
 
