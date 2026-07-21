@@ -86,18 +86,12 @@ function initPointAllocator(config) {
       "Ya has repartido el máximo de puntos permitido en esta categoría o en total. Quita alguno para poder asignar otro.",
       "error",
     );
+    clearTimeout(window.__pointAllocatorResetMensaje);
+    window.__pointAllocatorResetMensaje = setTimeout(() => {
+      const totales = obtenerTotalesPorCategoria();
+      validarYActualizarBoton(totales);
+    }, 1500);
   }
-  /*
-  function mostrarAvisoLimite() {
-    if (!mensajeValidacion) return;
-    mensajeValidacion.textContent = `Ya has repartido el máximo de puntos permitido (${totalMaximoPermitido()}). Quita alguno para poder asignar otro.`;
-    mensajeValidacion.className = "mt-3 text-sm font-semibold text-red-400";
-  }
-  */
-  /*
- const plusButtons = document.querySelectorAll(".plus-btn");
- const minusButtons = document.querySelectorAll(".minus-btn");
- */
 
   function actualizarContadores() {
     const inputs = document.querySelectorAll(".point-input");
@@ -187,35 +181,7 @@ function initPointAllocator(config) {
     }
   }
   // --- FIN NUEVO ---
-  /* 
-  plusButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      const container = button.closest(".point-row");
-      const input = container.querySelector(".point-input");
-      let value = parseInt(input.value);
 
-      if (value < config.maximo) {
-        input.value = value + 1;
-        actualizarCirculos();
-        actualizarContadores();
-      }
-    });
-  });
-
-  minusButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      const container = button.closest(".point-row");
-      const input = container.querySelector(".point-input");
-      let value = parseInt(input.value);
-
-      if (value > config.minimo) {
-        input.value = value - 1;
-        actualizarCirculos();
-        actualizarContadores();
-      }
-    });
-  });
-*/
   function actualizarCirculos() {
     document.querySelectorAll(".point-row").forEach((row) => {
       const input = row.querySelector(".point-input");
