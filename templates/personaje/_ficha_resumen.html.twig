@@ -1,20 +1,25 @@
+
+{% set mensaje_resumen_incompleto = "No completaste esta fase todavia" %}
+
 <div class="bg-zinc-900 rounded-xl border border-zinc-700 p-5">
 
     <h2 class="text-2xl font-bold text-red-300 mb-4">
         {{ personaje.nombre }}
     </h2>
+
+    {# ==============================
+        CABECERA DEL PERSONAJE
+        ============================== #}
     <div class="border-b border-zinc-700">
 
-        {# ==============================
-            CABECERA DEL PERSONAJE
-            ============================== #}
+
         <button
             type="button"
             class="w-full flex justify-between items-center py-3 text-left"
             onclick="toggleFichaSection('cabecera')"
             >
-            <span class="text-xl font-semibold text-red-300">
-                Cabecera
+            <span class="text-xl font-skinny text-red-300">
+                Datos Personales
             </span>
 
             <span id="icon-cabecera" class="text-white">▼</span>
@@ -22,45 +27,98 @@
         <div id="contenido-cabecera">
             <div class="space-y-2 text-sm">
 
-            <div>
-                <span class="text-zinc-400">Clan:</span>
-                <span class="text-red-300">
-                    {{ personaje.clan.nombre }}
-                </span>
-            </div>
+                <div>
+                    <span class="text-zinc-400">Clan:</span>
+                    <span class="text-red-300">
+                        {{ personaje.clan.nombre }}
+                    </span>
+                </div>
 
-            <div>
-                <span class="text-zinc-400">Naturaleza:</span>
-                <span class="text-zinc-200">
-                    {{ personaje.naturaleza }}
-                </span>
-            </div>
+                <div>
+                    <span class="text-zinc-400">Naturaleza:</span>
+                    <span class="text-zinc-200">
+                        {{ personaje.naturaleza }}
+                    </span>
+                </div>
 
-            <div>
-                <span class="text-zinc-400">Conducta:</span>
-                <span class="text-zinc-200">
-                    {{ personaje.conducta }}
-                </span>
-            </div>
+                <div>
+                    <span class="text-zinc-400">Conducta:</span>
+                    <span class="text-zinc-200">
+                        {{ personaje.conducta }}
+                    </span>
+                </div>
 
-            <div>
-                <span class="text-zinc-400">Concepto:</span>
-                <span class="text-zinc-200">
-                    {{ personaje.concepto }}
-                </span>
-            </div>
+                <div>
+                    <span class="text-zinc-400">Concepto:</span>
+                    <span class="text-zinc-200">
+                        {{ personaje.concepto }}
+                    </span>
+                </div>
 
-            <div>
-                <span class="text-zinc-400">Experiencia:</span>
-                <span class="text-zinc-200">
-                    {{ personaje.experiencia }}
-                </span>
-            </div>
+                <div>
+                    <span class="text-zinc-400">Experiencia:</span>
+                    <span class="text-zinc-200">
+                        {{ personaje.experiencia }}
+                    </span>
+                </div>
 
             </div>
         </div>
     </div>
 
+    {# ==========
+        DISCIPLINAS resumen
+        ========== #}
+    <div class="border-b border-zinc-700">
+
+        <button
+            type="button"
+            class="w-full flex justify-between items-center py-3 text-left"
+            onclick="toggleFichaSection('disciplinas')"
+            >
+            <span class="text-xl font-skinny text-red-300">
+                Disciplinas
+            </span>
+
+            <span id="icon-disciplinas" class="text-white">▼</span>
+        </button>
+
+        <div id="contenido-disciplinas" class="mt-2 mb-6 hidden">
+
+            <div class="space-y-2 text-sm">
+
+                {% if personaje.personajeDisciplinas is empty %}
+
+                    <p class="text-zinc-400">
+                        {{ mensaje_resumen_incompleto }}
+                    </p>
+                    {% else %}
+
+                    {% for pd in personaje.personajeDisciplinas %}
+
+                        <div class="flex justify-between items-center">
+                            <span class="text-zinc-300 text-sm">
+                                {{ pd.disciplina.nombre }}
+                            </span>
+
+                            <div class="flex gap-1">
+                                {% for i in 1..5 %}
+                                    {% if i <= pd.nivel %}
+                                        <span class="w-2.5 h-2.5 rounded-full bg-red-400"></span>
+                                    {% else %}
+                                        <span class="w-2.5 h-2.5 rounded-full border border-zinc-500"></span>
+                                    {% endif %}
+                                    
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
     {# ==========
         ATRIBUTOS resumen
         ========== #}
@@ -70,20 +128,15 @@
             class="w-full flex justify-between items-center py-3 text-left"
             onclick="toggleFichaSection('atributos')"
             >
-            <span class="text-xl font-semibold text-red-300">
+            <span class="text-xl font-skinny text-red-300">
                 Atributos
             </span>
 
             <span id="icon-atributos" class="text-white">▼</span>
         </button>
 
-        <div id="contenido-atributos">
+        <div id="contenido-atributos" class="hidden">
 
-        {# 
-            <h3 class="text-xl font-semibold text-red-300 border-b border-zinc-700 pb-2 mt-6 mb-4">
-                Atributos
-            </h3>
-        #}
             {% set categorias = ['Fisico','Social','Mental'] %}
 
             {% for cat in categorias %}
@@ -117,42 +170,37 @@
                                             <span class="w-2.5 h-2.5 rounded-full border border-zinc-500"></span>
 
                                         {% endif %}
-
+                                        
                                     {% endfor %}
-
+                                
                                 </div>
-
                             </div>
+
+                        {% else %}
+
                         {% endif %}
                     {% endfor %}
                 </div>
             {% endfor %}
+
         </div>
     </div>
 
-    {# ==========
-        HABILIDADES resumen
-        ========== #}
     <div class="border-b border-zinc-700">
         <button
             type="button"
             class="w-full flex justify-between items-center py-3 text-left"
             onclick="toggleFichaSection('habilidades')"
             >
-            <span class="text-xl font-semibold text-red-300">
+            <span class="text-xl font-skinny text-red-300">
                 Habilidades
             </span>
 
             <span id="icon-habilidades" class="text-white">▼</span>
         </button>
 
-        <div id="contenido-habilidades">
+        <div id="contenido-habilidades" class="hidden">
 
-        {#
-            <h3 class="text-xl font-semibold text-red-300 border-b border-zinc-700 pb-2 mt-6 mb-4">
-                Habilidades
-            </h3>
-        #}
             {% set categorias = ['Talentos','Tecnicas','Conocimientos'] %}
 
             {% for cat in categorias %}
@@ -171,7 +219,7 @@
                         <span id="icon-habilidad-{{ catId }}" class="text-white">▲</span>
                     </button>
 
-                    <div id="contenido-habilidad-{{ catId }}" class="space-y-2 mb-6 mt-3">
+                    <div id="contenido-habilidad-{{ catId }}" class="space-y-2 mb-6 mt-3 hidden">
 
                         {% for pa in personaje.personajeHabilidades %}
 
@@ -190,25 +238,110 @@
                                             {% if i <= pa.nivel %}
 
                                                 <span class="w-2.5 h-2.5 rounded-full bg-red-400"></span>
-
                                             {% else %}
 
                                                 <span class="w-2.5 h-2.5 rounded-full border border-zinc-500"></span>
-
                                             {% endif %}
-
                                         {% endfor %}
-
                                     </div>
                                 </div>
 
                             {% endif %}
+
                         {% endfor %}
                     </div>
                 </div>
             {% endfor %}
         </div>
     </div>
+
+    {# ==========
+        TRASFONDOS resumen
+        ========== #}
+    <div class="border-b border-zinc-700">
+
+        <button
+            type="button"
+            class="w-full flex justify-between items-center py-3 text-left"
+            onclick="toggleFichaSection('trasfondos')"
+            >
+            <span class="text-xl font-skinny text-red-300">
+                Trasfondos
+            </span>
+
+            <span id="icon-trasfondos" class="text-white">▼</span>
+        </button>
+
+        <div id="contenido-trasfondos" class="mt-2 mb-6 hidden">
+            {% if personaje.personajeTrasfondos is empty %}
+                <p class="text-zinc-400">
+                    {{ mensaje_resumen_incompleto }}
+                </p>
+            {% else %}
+                {% for pt in personaje.personajeTrasfondos %}
+                    <div class="flex justify-between items-center">
+                        <span class="text-zinc-300 text-sm">
+                            {{ pt.trasfondo.nombre }}
+                        </span>
+                        <div class="flex gap-1">
+                            {% for i in 1..5 %}
+                                {% if i <= pt.nivel %}
+                                    <span class="w-2.5 h-2.5 rounded-full bg-red-400"></span>
+                                {% else %}
+                                    <span class="w-2.5 h-2.5 rounded-full border border-zinc-500"></span>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+    
+    
+    {# ==========
+        VIRTUDES resumen
+        ========== #}
+    <div class="border-b border-zinc-700">
+
+        <button
+            type="button"
+            class="w-full flex justify-between items-center py-3 text-left"
+            onclick="toggleFichaSection('virtudes')"
+            >
+            <span class="text-xl font-skinny text-red-300">
+                Virtudes
+            </span>
+
+            <span id="icon-virtudes" class="text-white">▼</span>
+        </button>
+
+        <div id="contenido-virtudes" class="mt-2 mb-6 hidden">
+            {% if personaje.personajeVirtudes is empty %}
+                <p class="text-zinc-400">
+                    {{ mensaje_resumen_incompleto }}
+                </p>
+            {% else %}
+                {% for pv in personaje.personajeVirtudes %}
+                    <div class="flex justify-between items-center">
+                        <span class="text-zinc-300 text-sm">
+                            {{ pv.virtud.nombre }}
+                        </span>
+                        <div class="flex gap-1">
+                            {% for i in 1..5 %}
+                                {% if i <= pv.nivel %}
+                                    <span class="w-2.5 h-2.5 rounded-full bg-red-400"></span>
+                                {% else %}
+                                    <span class="w-2.5 h-2.5 rounded-full border border-zinc-500"></span>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+
 
 </div>
 
