@@ -17,7 +17,7 @@
                 Cabecera
             </span>
 
-            <span id="icon-atributos" class="text-white">▼</span>
+            <span id="icon-cabecera" class="text-white">▼</span>
         </button>
         <div id="contenido-cabecera">
             <div class="space-y-2 text-sm">
@@ -140,7 +140,7 @@
             onclick="toggleFichaSection('habilidades')"
             >
             <span class="text-xl font-semibold text-red-300">
-                habilidades
+                Habilidades
             </span>
 
             <span id="icon-habilidades" class="text-white">▼</span>
@@ -156,43 +156,55 @@
             {% set categorias = ['Talentos','Tecnicas','Conocimientos'] %}
 
             {% for cat in categorias %}
-                <h4 class="text-zinc-300 font-semibold mt-4 mb-2">
-                    {{ cat }}
-                </h4>
+                {% set catId = cat|lower|replace({' ': ''}) %}
 
-                <div class="space-y-2 mb-6">
+                <div class="border-t border-zinc-800 mt-3 pt-3">
+                    <button
+                        type="button"
+                        class="w-full flex justify-between items-center text-left"
+                        onclick="toggleFichaSubsection('{{ catId }}')"
+                    >
+                        <h4 class="text-zinc-300 font-semibold">
+                            {{ cat }}
+                        </h4>
 
-                    {% for pa in personaje.personajeHabilidades %}
+                        <span id="icon-habilidad-{{ catId }}" class="text-white">▲</span>
+                    </button>
 
-                        {% if pa.habilidad.categoria == cat %}
+                    <div id="contenido-habilidad-{{ catId }}" class="space-y-2 mb-6 mt-3">
 
-                            <div class="flex justify-between items-center">
+                        {% for pa in personaje.personajeHabilidades %}
 
-                                <span class="text-zinc-300 text-sm">
-                                    {{ pa.habilidad.nombre }}
-                                </span>
+                            {% if pa.habilidad.categoria == cat %}
 
-                                <div class="flex gap-1">
+                                <div class="flex justify-between items-center">
 
-                                    {% for i in 1..5 %}
+                                    <span class="text-zinc-300 text-sm">
+                                        {{ pa.habilidad.nombre }}
+                                    </span>
 
-                                        {% if i <= pa.nivel %}
+                                    <div class="flex gap-1">
 
-                                            <span class="w-2.5 h-2.5 rounded-full bg-red-400"></span>
+                                        {% for i in 1..5 %}
 
-                                        {% else %}
+                                            {% if i <= pa.nivel %}
 
-                                            <span class="w-2.5 h-2.5 rounded-full border border-zinc-500"></span>
+                                                <span class="w-2.5 h-2.5 rounded-full bg-red-400"></span>
 
-                                        {% endif %}
+                                            {% else %}
 
-                                    {% endfor %}
+                                                <span class="w-2.5 h-2.5 rounded-full border border-zinc-500"></span>
 
+                                            {% endif %}
+
+                                        {% endfor %}
+
+                                    </div>
                                 </div>
-                            </div>
 
-                        {% endif %}
-                    {% endfor %}
+                            {% endif %}
+                        {% endfor %}
+                    </div>
                 </div>
             {% endfor %}
         </div>
@@ -204,6 +216,23 @@
     function toggleFichaSection(nombre) {
         const contenido = document.getElementById('contenido-' + nombre);
         const icono = document.getElementById('icon-' + nombre);
+
+        if (!contenido || !icono) return;
+
+        contenido.classList.toggle('hidden');
+
+        if (contenido.classList.contains('hidden')) {
+            icono.textContent = '▼';
+        } else {
+            icono.textContent = '▲';
+        }
+    }
+
+    function toggleFichaSubsection(nombre) {
+        const contenido = document.getElementById('contenido-habilidad-' + nombre);
+        const icono = document.getElementById('icon-habilidad-' + nombre);
+
+        if (!contenido || !icono) return;
 
         contenido.classList.toggle('hidden');
 
