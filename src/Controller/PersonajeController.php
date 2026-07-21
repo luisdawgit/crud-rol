@@ -592,6 +592,7 @@ class PersonajeController extends AbstractController
 
         //dd($personaje->getClan()->getClanDisciplinas()->count());
         return $this->render('personaje/wizard/point_allocation.html.twig', [
+            'personaje' => $personaje,
             'titulo' => 'Disciplinas',
             'rasgosAgrupados' => $disciplinasAgrupadas,
             'inputName' => 'disciplinas',

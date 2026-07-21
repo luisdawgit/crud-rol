@@ -8,9 +8,19 @@
     data-distribucion="{{ distribucion|json_encode }}"
 >
 
-    <div class="max-w-7xl mx-auto grid lg:grid-cols-3 gap-8">
+    {#
+    <div class="max-w-7xl mx-auto grid lg:col-span-1 gap-8">
+    #}
+    <div class="max-w-7xl mx-auto grid lg:grid-cols-4 gap-8">
 
-        {# Columna izquierda (2/3) #}
+        {# Columna izquierda (1/4) #}
+        <aside class="lg:col-span-1 sticky top-6 self-start">
+            {{ include('personaje/_ficha_resumen.html.twig', {
+                personaje: personaje
+            }) }}
+        </aside>
+
+        {# Columna central: wizard (2/4) #}
         <div class="lg:col-span-2">
             <div class="bg-zinc-900 rounded-xl shadow-2xl p-8 border border-zinc-700">
                 <div id="formulario" class="max-w-4xl mx-auto bg-zinc-900 rounded-xl shadow-2xl p-8 border border-zinc-700">
@@ -81,8 +91,8 @@
             </div>
         </div>
 
-        {# Columna derecha (1/3) #}
-        <aside class="sticky top-6 self-start">
+        {# Columna derecha (1/4) #}
+        <aside class="lg:col-span-1 sticky top-6 self-start">
             <div class="bg-zinc-900 rounded-xl border border-zinc-700 p-6">
 
                 <h2 class="text-xl font-bold text-red-300 mb-4">

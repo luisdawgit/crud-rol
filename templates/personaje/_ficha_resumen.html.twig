@@ -1,0 +1,216 @@
+<div class="bg-zinc-900 rounded-xl border border-zinc-700 p-5">
+
+    <h2 class="text-2xl font-bold text-red-300 mb-4">
+        {{ personaje.nombre }}
+    </h2>
+    <div class="border-b border-zinc-700">
+
+        {# ==============================
+            CABECERA DEL PERSONAJE
+            ============================== #}
+        <button
+            type="button"
+            class="w-full flex justify-between items-center py-3 text-left"
+            onclick="toggleFichaSection('cabecera')"
+            >
+            <span class="text-xl font-semibold text-red-300">
+                Cabecera
+            </span>
+
+            <span id="icon-atributos" class="text-white">▼</span>
+        </button>
+        <div id="contenido-cabecera">
+            <div class="space-y-2 text-sm">
+
+            <div>
+                <span class="text-zinc-400">Clan:</span>
+                <span class="text-red-300">
+                    {{ personaje.clan.nombre }}
+                </span>
+            </div>
+
+            <div>
+                <span class="text-zinc-400">Naturaleza:</span>
+                <span class="text-zinc-200">
+                    {{ personaje.naturaleza }}
+                </span>
+            </div>
+
+            <div>
+                <span class="text-zinc-400">Conducta:</span>
+                <span class="text-zinc-200">
+                    {{ personaje.conducta }}
+                </span>
+            </div>
+
+            <div>
+                <span class="text-zinc-400">Concepto:</span>
+                <span class="text-zinc-200">
+                    {{ personaje.concepto }}
+                </span>
+            </div>
+
+            <div>
+                <span class="text-zinc-400">Experiencia:</span>
+                <span class="text-zinc-200">
+                    {{ personaje.experiencia }}
+                </span>
+            </div>
+
+            </div>
+        </div>
+    </div>
+
+    {# ==========
+        ATRIBUTOS resumen
+        ========== #}
+    <div class="border-b border-zinc-700">
+        <button
+            type="button"
+            class="w-full flex justify-between items-center py-3 text-left"
+            onclick="toggleFichaSection('atributos')"
+            >
+            <span class="text-xl font-semibold text-red-300">
+                Atributos
+            </span>
+
+            <span id="icon-atributos" class="text-white">▼</span>
+        </button>
+
+        <div id="contenido-atributos">
+
+        {# 
+            <h3 class="text-xl font-semibold text-red-300 border-b border-zinc-700 pb-2 mt-6 mb-4">
+                Atributos
+            </h3>
+        #}
+            {% set categorias = ['Fisico','Social','Mental'] %}
+
+            {% for cat in categorias %}
+
+                <h4 class="text-zinc-300 font-semibold mt-4 mb-2">
+                    {{ cat }}
+                </h4>
+
+                <div class="space-y-2 mb-6">
+
+                    {% for pa in personaje.personajeAtributos %}
+
+                        {% if pa.atributo.categoria == cat %}
+
+                            <div class="flex justify-between items-center">
+
+                                <span class="text-zinc-300 text-sm">
+                                    {{ pa.atributo.nombre }}
+                                </span>
+
+                                <div class="flex gap-1">
+
+                                    {% for i in 1..5 %}
+
+                                        {% if i <= pa.nivel %}
+
+                                            <span class="w-2.5 h-2.5 rounded-full bg-red-400"></span>
+
+                                        {% else %}
+
+                                            <span class="w-2.5 h-2.5 rounded-full border border-zinc-500"></span>
+
+                                        {% endif %}
+
+                                    {% endfor %}
+
+                                </div>
+
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    {# ==========
+        HABILIDADES resumen
+        ========== #}
+    <div class="border-b border-zinc-700">
+        <button
+            type="button"
+            class="w-full flex justify-between items-center py-3 text-left"
+            onclick="toggleFichaSection('habilidades')"
+            >
+            <span class="text-xl font-semibold text-red-300">
+                habilidades
+            </span>
+
+            <span id="icon-habilidades" class="text-white">▼</span>
+        </button>
+
+        <div id="contenido-habilidades">
+
+        {#
+            <h3 class="text-xl font-semibold text-red-300 border-b border-zinc-700 pb-2 mt-6 mb-4">
+                Habilidades
+            </h3>
+        #}
+            {% set categorias = ['Talentos','Tecnicas','Conocimientos'] %}
+
+            {% for cat in categorias %}
+                <h4 class="text-zinc-300 font-semibold mt-4 mb-2">
+                    {{ cat }}
+                </h4>
+
+                <div class="space-y-2 mb-6">
+
+                    {% for pa in personaje.personajeHabilidades %}
+
+                        {% if pa.habilidad.categoria == cat %}
+
+                            <div class="flex justify-between items-center">
+
+                                <span class="text-zinc-300 text-sm">
+                                    {{ pa.habilidad.nombre }}
+                                </span>
+
+                                <div class="flex gap-1">
+
+                                    {% for i in 1..5 %}
+
+                                        {% if i <= pa.nivel %}
+
+                                            <span class="w-2.5 h-2.5 rounded-full bg-red-400"></span>
+
+                                        {% else %}
+
+                                            <span class="w-2.5 h-2.5 rounded-full border border-zinc-500"></span>
+
+                                        {% endif %}
+
+                                    {% endfor %}
+
+                                </div>
+                            </div>
+
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function toggleFichaSection(nombre) {
+        const contenido = document.getElementById('contenido-' + nombre);
+        const icono = document.getElementById('icon-' + nombre);
+
+        contenido.classList.toggle('hidden');
+
+        if (contenido.classList.contains('hidden')) {
+            icono.textContent = '▼';
+        } else {
+            icono.textContent = '▲';
+        }
+    }
+</script>
