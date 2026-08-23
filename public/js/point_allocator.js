@@ -1,3 +1,9 @@
+/**
+ * Inicializa el asignador de puntos para la página.
+ * Configura controles, validaciones y el estado visual de los puntos.
+ *
+ * @param {Object} config - Parámetros de configuración del asignador.
+ */
 function initPointAllocator(config) {
   config.minimo = parseInt(config.minimo);
   config.maximo = parseInt(config.maximo);
@@ -121,7 +127,7 @@ function initPointAllocator(config) {
     validarYActualizarBoton(totales);
   }
 
-  // --- NUEVO: validación en tiempo real ---
+  // --- Validación en tiempo real ---
   function validarYActualizarBoton(totales) {
     if (!btnContinuar) return;
 
@@ -180,7 +186,6 @@ function initPointAllocator(config) {
       }
     }
   }
-  // --- FIN NUEVO ---
 
   function actualizarCirculos() {
     document.querySelectorAll(".point-row").forEach((row) => {
@@ -188,12 +193,17 @@ function initPointAllocator(config) {
       if (!input) return;
 
       const valor = parseInt(input.value);
+
+      //Selecciona todos los elementos tipo poin-dot
       row.querySelectorAll(".point-dot").forEach((dot) => {
         const nivel = parseInt(dot.dataset.value);
+
         if (nivel <= valor) {
+          //Añade/quita estilos
           dot.classList.add("bg-red-700");
           dot.classList.remove("bg-transparent");
         } else {
+          //Añade/quita estilos
           dot.classList.remove("bg-red-700");
           dot.classList.add("bg-transparent");
         }
@@ -201,6 +211,10 @@ function initPointAllocator(config) {
     });
   }
 
+  /*
+  Añade el manejador de clic a cada punto para cambiar el valor del input,
+  validar límites de puntos por categoría/total y actualizar la UI.
+   */
   document.querySelectorAll(".point-dot").forEach((dot) => {
     dot.addEventListener("click", () => {
       const row = dot.closest(".point-row");

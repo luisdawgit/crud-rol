@@ -599,8 +599,8 @@ class PersonajeController extends AbstractController
             'minimo' => 0,
             'maximo' => 3,
             'regla' => $regla,
-            'tipoValidacion' => 'total',   // ← NUEVO
-            'distribucion' => $distribucion,    // ← NUEVO (ya existe la variable)
+            'tipoValidacion' => 'total',
+            'distribucion' => $distribucion,
         ]);
 
         $humanidad = $consciencia + $autocontrol;
