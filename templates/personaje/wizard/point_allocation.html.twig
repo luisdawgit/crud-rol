@@ -38,49 +38,57 @@
 
                         {% for item in lista %}
 
-                        <div class="point-row flex items-center justify-between py-3 border-b border-zinc-800">
+                        <div class="point-row py-3 border-b border-zinc-800">
 
-                            <span class="text-zinc-200 font-medium">
+                            {# Nombre del rasgo #}
+                            <div class="text-base md:text-lg text-zinc-200 font-semibold mb-3 lg:mb-0">
                                 {{ item.nombre }}
-                            </span>
+                            </div>
 
-                            <div class="flex items-center gap-4">
+                            {# Controles #}
+                            <div class="flex items-center justify-between gap-3 lg:justify-end">
 
-                                <div class="flex gap-1 point-display">
+                                {# Círculos #}
+                                <div class="flex gap-2 point-display">
                                     {% for i in 1..5 %}
                                         <span
-                                            class="w-5 h-5 rounded-full border border-zinc-400 point-dot
-                                            hover:scale-110
-                                            cursor-pointer
-                                            transition
-                                            duration-150"
+                                            class="w-5 h-5 rounded-full border border-zinc-400 point-dot cursor-pointer hover:scale-110 transition"
                                             data-value="{{ i }}">
                                         </span>
                                     {% endfor %}
                                 </div>
 
-                                <div class="flex items-center gap-2">
-                                    <input
-                                        value="{{ minimo }}"
-                                        class="point-input
-                                                w-10
-                                                bg-transparent
-                                                border-0
-                                                text-center
-                                                text-2xl
-                                                {#
-                                                type="hidden"
-                                                font-bold
-                                                #}
-                                                text-white
-                                                focus:outline-none"
-                                        name="{{ inputName }}[{{ item.id }}]"
-                                        data-categoria="{{ categoria }}"
-                                        readonly
-                                    >
+                                {# Valor actual #}
+                                <input
+                                    type="number"
+                                    class="point-input w-12 h-10 text-center rounded-lg bg-zinc-800 border border-zinc-600 text-white"
+                                    name="{{ inputName }}[{{ item.id }}]"
+                                    value="{{ minimo }}"
+                                    readonly
+                                    data-categoria="{{ categoria }}"
+                                >
+
+                                {# Botones para móvil/tablet #}
+                                <div class="flex md:hidden items-center gap-2 bg-red-500">
+                                {#<div class="flex lg:hidden items-center gap-2">#}
+                                
+
+                                    <button
+                                        type="button"
+                                        class="minus-btn w-10 h-10 rounded-lg bg-zinc-700 hover:bg-red-800 text-white text-xl font-bold transition">
+                                        −
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        class="plus-btn w-10 h-10 rounded-lg bg-zinc-700 hover:bg-red-800 text-white text-xl font-bold transition">
+                                        +
+                                    </button>
+
                                 </div>
 
                             </div>
+
                         </div>
 
                         {% endfor %}
