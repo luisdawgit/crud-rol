@@ -16,6 +16,74 @@ function initPointAllocator(config) {
   const btnContinuar = document.getElementById("btn-continuar");
   const mensajeValidacion = document.getElementById("mensaje_validacion");
 
+  //-----------------------------------------
+  const plusButtons = document.querySelectorAll(".plus-btn");
+  const minusButtons = document.querySelectorAll(".minus-btn");
+
+  plusButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const row = button.closest(".point-row");
+      const input = row.querySelector(".point-input");
+      const categoria = input.dataset.categoria;
+
+      const valorActual = parseInt(input.value);
+
+      // No superar el máximo individual del rasgo
+      if (valorActual >= config.maximo) {
+        mostrarAvisoLimite();
+        return;
+      }
+
+      const diferencia = 1;
+
+      // Comprobar que la distribución por categorías sigue siendo posible
+      if (tipoValidacion === "categorias") {
+        const totalesSimulados = obtenerTotalesPorCategoria();
+
+        totalesSimulados[categoria] =
+          (totalesSimulados[categoria] || 0) + diferencia;
+
+        if (!esDistribucionPosible(totalesSimulados)) {
+          mostrarAvisoLimite();
+          return;
+        }
+      }
+
+      // Comprobar el límite total
+      const totalActual = calcularTotalActual();
+      const totalMax = totalMaximoPermitido();
+
+      if (totalActual + diferencia > totalMax) {
+        mostrarAvisoLimite();
+        return;
+      }
+
+      // Si todo es válido, asignamos el punto
+      input.value = valorActual + 1;
+
+      actualizarContadores();
+      actualizarCirculos();
+    });
+  });
+
+  minusButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const row = button.closest(".point-row");
+      const input = row.querySelector(".point-input");
+
+      let value = parseInt(input.value);
+
+      if (value > config.minimo) {
+        input.value = value - 1;
+
+        actualizarCirculos();
+        actualizarContadores();
+      }
+    });
+  });
+
+  //-----------------------------------------
+
   function calcularTotalActual() {
     let total = 0;
     document.querySelectorAll(".point-input").forEach((input) => {
