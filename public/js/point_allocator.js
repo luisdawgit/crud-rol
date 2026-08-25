@@ -153,6 +153,17 @@ function initPointAllocator(config) {
 
     mensajeValidacion.textContent = texto;
     mensajeValidacion.className = estilos[tipo] || estilos.aviso;
+    // En móvil, llevar automáticamente al usuario a la guía
+    if (window.innerWidth < 1024) {
+      const guia = document.getElementById("guia");
+
+      if (guia) {
+        guia.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }
+    }
   }
 
   function mostrarAvisoLimite() {
