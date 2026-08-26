@@ -8,9 +8,6 @@
     data-distribucion="{{ distribucion|json_encode }}"
 >
 
-    {#
-    <div class="max-w-7xl mx-auto grid lg:col-span-1 gap-8">
-    #}
     <div class="max-w-7xl mx-auto grid lg:grid-cols-4 gap-8 scroll-smooth">
 
         {# Columna izquierda (1/4) #}
@@ -32,7 +29,7 @@
                         href="#guia"
                         class="lg:hidden inline-block mb-6 text-red-300 hover:text-red-200 underline"
                     >
-                        ↓ Ver guía y avisos
+                        ↓ Consultar guía de reparto de puntos y avisos
                     </a>
 
                     {% for categoria, lista in rasgosAgrupados %}
@@ -106,7 +103,7 @@
         </div>
 
         {# Columna derecha (1/4) #}
-        <aside class="lg:col-span-1 sticky top-6 self-start">
+        <aside id="guia" class="lg:col-span-1 sticky top-6 self-start">
             <div class="bg-zinc-900 rounded-xl border border-zinc-700 p-6">
 
                 <h2 class="text-xl font-bold text-red-300 mb-4">
