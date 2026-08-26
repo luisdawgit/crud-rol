@@ -12,9 +12,9 @@ function initPointAllocator(config) {
   const form = document.querySelector("form");
   const tipoValidacion = form.dataset.tipoValidacion;
   const distribucionEsperada = JSON.parse(form.dataset.distribucion || "null");
-
   const btnContinuar = document.getElementById("btn-continuar");
   const mensajeValidacion = document.getElementById("mensaje_validacion");
+  let distribucionCorrectaAnterior = false;
 
   //-----------------------------------------
   const plusButtons = document.querySelectorAll(".plus-btn");
@@ -63,6 +63,7 @@ function initPointAllocator(config) {
 
       actualizarContadores();
       actualizarCirculos();
+      comprobarCambioADistribucionCorrecta();
     });
   });
 
@@ -78,6 +79,7 @@ function initPointAllocator(config) {
 
         actualizarCirculos();
         actualizarContadores();
+        comprobarCambioADistribucionCorrecta();
       }
     });
   });
@@ -139,6 +141,19 @@ function initPointAllocator(config) {
     );
   }
 
+  function irAGuia() {
+    if (window.innerWidth < 1024) {
+      const guia = document.getElementById("guia");
+
+      if (guia) {
+        guia.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }
+    }
+  }
+
   function mostrarMensaje(texto, tipo) {
     if (!mensajeValidacion) return;
 
@@ -154,16 +169,6 @@ function initPointAllocator(config) {
     mensajeValidacion.textContent = texto;
     mensajeValidacion.className = estilos[tipo] || estilos.aviso;
     // En móvil, llevar automáticamente al usuario a la guía
-    if (window.innerWidth < 1024) {
-      const guia = document.getElementById("guia");
-
-      if (guia) {
-        guia.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
-      }
-    }
   }
 
   function mostrarAvisoLimite() {
@@ -171,9 +176,13 @@ function initPointAllocator(config) {
       "Ya has repartido el máximo de puntos permitido en esta categoría o en total. Quita alguno para poder asignar otro.",
       "error",
     );
+
     clearTimeout(window.__pointAllocatorResetMensaje);
+    irAGuia();
+
     window.__pointAllocatorResetMensaje = setTimeout(() => {
       const totales = obtenerTotalesPorCategoria();
+
       validarYActualizarBoton(totales);
     }, 1500);
   }
@@ -290,6 +299,35 @@ function initPointAllocator(config) {
     });
   }
 
+  function comprobarCambioADistribucionCorrecta() {
+    const totales = obtenerTotalesPorCategoria();
+
+    let correcta = false;
+
+    if (
+      tipoValidacion === "categorias" &&
+      Array.isArray(distribucionEsperada)
+    ) {
+      const valores = Object.values(totales).sort((a, b) => a - b);
+      const esperado = [...distribucionEsperada].sort((a, b) => a - b);
+
+      correcta = JSON.stringify(valores) === JSON.stringify(esperado);
+    } else if (
+      tipoValidacion === "total" &&
+      typeof distribucionEsperada === "number"
+    ) {
+      const totalActual = Object.values(totales).reduce((a, b) => a + b, 0);
+
+      correcta = totalActual === distribucionEsperada;
+    }
+
+    if (correcta && !distribucionCorrectaAnterior && window.innerWidth < 1024) {
+      irAGuia();
+    }
+
+    distribucionCorrectaAnterior = correcta;
+  }
+
   /*
   Añade el manejador de clic a cada punto para cambiar el valor del input,
   validar límites de puntos por categoría/total y actualizar la UI.
@@ -334,6 +372,8 @@ function initPointAllocator(config) {
       input.value = nuevoValor;
       actualizarContadores();
       actualizarCirculos();
+
+      comprobarCambioADistribucionCorrecta();
     });
   });
 
